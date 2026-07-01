@@ -1,0 +1,16 @@
+# Claves privadas — NUNCA subir
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Logs pesados y datos temporales
+*.log
+_paso*.json
+
+# Binarios compilados
+target/
+*.o
