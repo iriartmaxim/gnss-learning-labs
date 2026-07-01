@@ -1,7 +1,7 @@
 # Path de aprendizaje — Pre-preparación para el JSNP Master (GNSS Academy)
 
 Autor: Maximiliano Iriart (mmiriart)
-v2 — reescritura del temario v1 en formato de labs (Claude Fable 5, julio 2026)
+v2 — reescritura del temario v1 en formato de labs (julio 2026)
 
 Mismo mapeo a los seis módulos del JSNP Master que la v1, pero cada tema se
 convierte en un lab con datos reales, entregable y criterio de validación.
