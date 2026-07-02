@@ -14,3 +14,4 @@ _paso*.json
 # Binarios compilados
 target/
 *.o
+data/raw/
