@@ -42,14 +42,14 @@ Entorno de referencia: WSL2 Ubuntu 24.04 (PCHOME), Python 3.12 en venv.
 - [x] **Entorno base.** venv + `numpy scipy matplotlib pandas cryptography`
   (ya operativo por el lab OSNMA). Agregar para este path:
   `georinex hatanaka unlzw3`.
-- [ ] **Refresco matemático dirigido.** Mínimos cuadrados y su versión
+- [x] **Refresco matemático dirigido.** Mínimos cuadrados y su versión
   ponderada, jacobianos y linealización, matrices de rotación 3D.
   Entregable: mini-notebook resolviendo un ajuste no lineal genérico con
   Gauss-Newton escrito a mano (sin `scipy.optimize`).
-- [ ] **Mecánica orbital mínima.** Elementos keplerianos; anomalía media,
+- [x] **Mecánica orbital mínima.** Elementos keplerianos; anomalía media,
   excéntrica y verdadera; qué perturba una órbita real (J2, presión de
   radiación). Solo lo necesario para leer una efeméride.
-- [ ] **Pipeline de datos.** Script `tools/fetch_data.py` que descargue y
+- [x] **Pipeline de datos.** Script `tools/fetch_data.py` que descargue y
   descomprima RINEX (nav y obs) y productos SP3/CLK. Fuentes:
   - RINEX y productos: BKG (`igs.bkg.bund.de`), CDDIS (requiere cuenta
     Earthdata de NASA).
@@ -77,12 +77,12 @@ PVT completa con observaciones reales.
   como cuarta incógnita; por eso hacen falta 4 satélites. Gauss-Newton.
   Validación: convergencia en pocas iteraciones incluso arrancando desde el
   centro de la Tierra.
-- [x] **Lab 1.3 — De efemérides a posición del satélite.** RINEX de
+- [ ] **Lab 1.3 — De efemérides a posición del satélite.** RINEX de
   navegación Galileo → ecuación de Kepler (iterativa) → plano orbital →
   ECEF con correcciones armónicas (Cuc/Cus, Crc/Crs, Cic/Cis).
   Validación: comparar contra SP3 o contra la salida de georinex/RTKLIB;
   diferencia de orden métrico o mejor.
-- [ ] **Lab 1.4 — DOP y geometría.** Construir la matriz de geometría G de
+- [x] **Lab 1.4 — DOP y geometría.** Construir la matriz de geometría G de
   una época real y calcular GDOP/PDOP/HDOP/VDOP/TDOP. Graficar un skyplot.
   Validación: el PDOP empeora al enmascarar satélites de baja elevación o
   al quedarse con satélites casi coplanares.
