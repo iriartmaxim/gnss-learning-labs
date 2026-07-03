@@ -86,7 +86,7 @@ PVT completa con observaciones reales.
   una época real y calcular GDOP/PDOP/HDOP/VDOP/TDOP. Graficar un skyplot.
   Validación: el PDOP empeora al enmascarar satélites de baja elevación o
   al quedarse con satélites casi coplanares.
-- [ ] **Lab 1.5 — Solución PVT completa.** RINEX de observación real
+- [x] **Lab 1.5 — Solución PVT completa.** RINEX de observación real
   (estación RAMSAC o IGS) + nav. Incluir: corrección de reloj del satélite
   (af0/af1/af2 + término relativista de excentricidad), rotación terrestre
   durante el tiempo de vuelo (efecto Sagnac), correcciones simples de
