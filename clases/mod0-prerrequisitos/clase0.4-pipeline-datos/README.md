@@ -47,12 +47,18 @@ finales MGEX de CODE → el lab trabaja con una fecha ~3 semanas atrás
 # desde la raíz del repo — baja nav + órbitas + relojes de un día
 python3 tools/fetch_data.py --date 2026-06-15 --que brdc,sp3,clk
 
+# observación RINEX 30 s de una estación IGS (p. ej. las argentinas
+# LPGS/CORD/UNSA/MGUE/RIO2/RGDG) — usada desde la clase 1.5:
+python3 tools/fetch_data.py --date 2026-06-15 --que obs --estacion CORD00ARG
+
 # deja todo descomprimido en data/raw/2026/166/ (ignorado por git)
 ```
 
 El script es idempotente (saltea lo ya bajado), usa solo stdlib, y si el
 final MGEX todavía no existe cae solo al SP3 rápido de IGS avisando que
-es solo GPS.
+es solo GPS. Para `--que obs` el archivo viene en Hatanaka: si el
+paquete `hatanaka` está instalado queda directamente el `.rnx`; si no,
+queda el `.crx` y el script imprime cómo convertirlo.
 
 ## Lab: verificar lo bajado
 

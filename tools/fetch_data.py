@@ -7,10 +7,15 @@ Fuentes anónimas por HTTPS/HTTP (sin cuenta):
     (finales: latencia ~2 semanas; para fechas recientes cae al SP3
      rapido de IGS en BKG, que es SOLO GPS y se avisa por pantalla)
 
+  - OBS RINEX 30 s    : BKG   https://igs.bkg.bund.de/root_ftp/IGS/obs/
+    (Hatanaka: si el paquete 'hatanaka' esta instalado deja el .rnx;
+     si no, queda el .crx y se imprime como convertirlo)
+
 Uso:
     python tools/fetch_data.py --date 2026-06-15
     python tools/fetch_data.py --date 2026-06-15 --que brdc,sp3,clk
     python tools/fetch_data.py --date 2026-06-15 --dest data/raw
+    python tools/fetch_data.py --date 2026-06-15 --que obs --estacion CORD00ARG
 
 Deja los archivos DESCOMPRIMIDOS en <dest>/<yyyy>/<ddd>/ y saltea lo que
 ya existe (idempotente). Solo stdlib: urllib + gzip.
@@ -18,7 +23,9 @@ ya existe (idempotente). Solo stdlib: urllib + gzip.
 Otras fuentes (documentadas en la clase 0.4, no automatizadas aca):
   - CDDIS (NASA)  : requiere cuenta Earthdata.
   - RAMSAC (IGN)  : RINEX de observacion de la red CORS argentina;
-                    portal con formulario -> descarga manual.
+                    portal con formulario -> descarga manual
+                    (las IGS argentinas LPGS/CORD/UNSA/MGUE/RIO2/RGDG
+                     salen automaticas con --que obs).
   - galmon.eu     : telemetria Galileo en vivo (modulo 4, OSNMA).
 """
 from __future__ import annotations
@@ -34,6 +41,7 @@ from datetime import date, datetime
 from pathlib import Path
 
 BKG_BRDC = "https://igs.bkg.bund.de/root_ftp/IGS/BRDC/{yyyy}/{ddd}/"
+BKG_OBS = "https://igs.bkg.bund.de/root_ftp/IGS/obs/{yyyy}/{ddd}/"
 BKG_IGS_PROD = "https://igs.bkg.bund.de/root_ftp/IGS/products/{week}/"
 CODE_MGEX = "http://ftp.aiub.unibe.ch/CODE_MGEX/CODE/{yyyy}/"
 
@@ -152,6 +160,48 @@ def traer_clk(d: date, destino: Path) -> Path | None:
     return None
 
 
+def traer_obs(d: date, destino: Path, estacion: str) -> Path | None:
+    """RINEX de observacion 30 s de una estacion IGS, desde BKG.
+
+    Viene en Hatanaka comprimido (.crx.gz). Si el paquete `hatanaka`
+    esta instalado, deja directamente el .rnx; si no, deja el .crx e
+    imprime el comando para convertirlo (fetch_data sigue siendo
+    stdlib-only)."""
+    yyyy, ddd = d.strftime("%Y"), d.strftime("%j")
+    est = estacion.upper()
+    nombre = f"{est}_R_{yyyy}{ddd}0000_01D_30S_MO"
+    rnx, crx, gz = (destino / (nombre + ext)
+                    for ext in (".rnx", ".crx", ".crx.gz"))
+    if rnx.exists():
+        print(f"  ya existe {rnx.name}, salteo")
+        return rnx
+    if not (crx.exists() or gz.exists()):
+        url = BKG_OBS.format(yyyy=yyyy, ddd=ddd) + nombre + ".crx.gz"
+        if not descargar(url, gz):
+            print(f"  [error] no consegui observacion de {est}; "
+                  "argentinas tipicas: LPGS00ARG CORD00ARG UNSA00ARG "
+                  "MGUE00ARG RIO200ARG RGDG00ARG")
+            return None
+    try:
+        import hatanaka
+    except ImportError:
+        if gz.exists() and not crx.exists():
+            descomprimir_gz(gz)
+        print("  [aviso] sin el paquete 'hatanaka' queda en formato "
+              "Hatanaka (.crx). Para pasarlo a RINEX:\n"
+              "      pip install hatanaka\n"
+              f"      python3 -c \"import hatanaka; "
+              f"hatanaka.decompress_on_disk('{crx}')\"")
+        return crx
+    objetivo = gz if gz.exists() else crx
+    salida = Path(hatanaka.decompress_on_disk(str(objetivo)))
+    if salida.exists() and salida != objetivo:
+        objetivo.unlink(missing_ok=True)
+    print(f"  hatanaka -> {salida.name} "
+          f"({salida.stat().st_size/1024:,.0f} KiB)")
+    return salida
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(
         description="descarga BRDC/SP3/CLK reales para un dia dado")
@@ -159,8 +209,10 @@ def main() -> int:
     ap.add_argument("--dest", default="data/raw",
                     help="carpeta base de salida (default: data/raw)")
     ap.add_argument("--que", default="brdc,sp3",
-                    help="que bajar, separado por comas: brdc,sp3,clk "
+                    help="que bajar, separado por comas: brdc,sp3,clk,obs "
                          "(default: brdc,sp3)")
+    ap.add_argument("--estacion", default="LPGS00ARG",
+                    help="estacion IGS para --que obs (default: LPGS00ARG)")
     args = ap.parse_args()
 
     d = datetime.strptime(args.date, "%Y-%m-%d").date()
@@ -179,8 +231,10 @@ def main() -> int:
             resultados[p] = traer_sp3(d, destino)
         elif p == "clk":
             resultados[p] = traer_clk(d, destino)
+        elif p == "obs":
+            resultados[p] = traer_obs(d, destino, args.estacion)
         else:
-            print(f"  [aviso] no conozco '{p}' (opciones: brdc, sp3, clk)")
+            print(f"  [aviso] no conozco '{p}' (opciones: brdc, sp3, clk, obs)")
             resultados[p] = None
 
     print("\n=== resumen ===")
