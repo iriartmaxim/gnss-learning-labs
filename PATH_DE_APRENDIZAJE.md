@@ -123,7 +123,7 @@ canal piloto E1-C); relación C/N0.
   (correlación circular) × grilla Doppler (~±5 kHz para receptor estático).
   Validación: detectar los PRN presentes en el dataset con su Doppler y
   fase de código.
-- [ ] **Lab 2.3 — Tracking y bits.** DLL early–prompt–late para código y
+- [x] **Lab 2.3 — Tracking y bits.** DLL early–prompt–late para código y
   PLL/Costas para portadora; demodular bits de navegación.
   Validación: encontrar el preámbulo del mensaje (GPS LNAV: `10001011`).
 - [ ] **Lab 2.4 — Receptor de referencia.** Correr gnss-sdr sobre el mismo
