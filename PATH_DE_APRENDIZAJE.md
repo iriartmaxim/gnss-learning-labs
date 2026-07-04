@@ -146,7 +146,7 @@ Receiver*; Kaplan & Hegarty; documentación de gnss-sdr.
 Mapea a **"Ionosphere Impact"**.
 Objetivo: cuantificar cada error del Lab 1.5 y reducirlo.
 
-- [ ] **Lab 3.1 — Modelos ionosféricos broadcast.** Implementar Klobuchar
+- [x] **Lab 3.1 — Modelos ionosféricos broadcast.** Implementar Klobuchar
   (GPS) y usar la implementación de referencia de NeQuick-G (Galileo, ESA
   publica el código) o un port a Python. Graficar retardo vs. elevación y
   hora local. Validación: máximos a primeras horas de la tarde local y a
