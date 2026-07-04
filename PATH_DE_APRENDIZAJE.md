@@ -114,7 +114,7 @@ Conceptos: estructura código + portadora + datos; GPS C/A (códigos Gold,
 1023 chips a 1.023 Mcps); Galileo E1 (códigos de memoria, modulación CBOC,
 canal piloto E1-C); relación C/N0.
 
-- [ ] **Lab 2.1 — Generación de códigos.** Implementar los códigos C/A con
+- [x] **Lab 2.1 — Generación de códigos.** Implementar los códigos C/A con
   los registros LFSR G1/G2 y verificar autocorrelación y correlación
   cruzada. Validación: pico de autocorrelación en 1023 y lóbulos laterales
   acotados según la familia Gold.
