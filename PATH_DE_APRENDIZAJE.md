@@ -118,7 +118,7 @@ canal piloto E1-C); relación C/N0.
   los registros LFSR G1/G2 y verificar autocorrelación y correlación
   cruzada. Validación: pico de autocorrelación en 1023 y lóbulos laterales
   acotados según la familia Gold.
-- [ ] **Lab 2.2 — Adquisición.** Sobre un dataset IQ público (los de
+- [x] **Lab 2.2 — Adquisición.** Sobre un dataset IQ público (los de
   gnss-sdr sirven): búsqueda paralela en fase de código vía FFT
   (correlación circular) × grilla Doppler (~±5 kHz para receptor estático).
   Validación: detectar los PRN presentes en el dataset con su Doppler y
