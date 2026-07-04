@@ -1,0 +1,44 @@
+{
+ "comparacion": [
+  {
+   "sistema": "GPS L1 C/A",
+   "prn": 1,
+   "propio": {
+    "delay": 523,
+    "doppler": 1750,
+    "metrica": 881.0539433711787
+   },
+   "gnss_sdr_publicado": {
+    "delay": 524,
+    "doppler": 1680
+   },
+   "delta_delay": 1,
+   "delta_doppler": 70,
+   "coincide": true
+  },
+  {
+   "sistema": "Galileo E1-B",
+   "prn": 1,
+   "propio": {
+    "delay": 2919,
+    "doppler": -625,
+    "metrica": 1690.2310848493457
+   },
+   "gnss_sdr_publicado": {
+    "delay": 2920,
+    "doppler": -632
+   },
+   "delta_delay": 1,
+   "delta_doppler": 7,
+   "coincide": true
+  }
+ ],
+ "gnss_sdr_instalado": true,
+ "gnss_sdr_real": {
+  "trackeo": true,
+  "code_phase": 2020,
+  "doppler": 1750,
+  "test_statistic": 181.668,
+  "prn": 1
+ }
+}
