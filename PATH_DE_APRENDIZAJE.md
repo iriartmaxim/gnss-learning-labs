@@ -155,7 +155,7 @@ Objetivo: cuantificar cada error del Lab 1.5 y reducirlo.
   doble frecuencia (E1/E5a o L1/L5): formar la combinación iono-free y
   comparar la solución contra monofrecuencia; estimar el retardo oblicuo
   eliminado. Validación: mejora clara en la componente vertical.
-- [ ] **Lab 3.3 — Troposfera.** Modelo de Saastamoinen + función de mapeo
+- [x] **Lab 3.3 — Troposfera.** Modelo de Saastamoinen + función de mapeo
   simple. Cuantificar el retardo cenital (~2.3 m) y su amplificación a baja
   elevación; efecto en la vertical de la solución.
 - [ ] **Lab 3.4 — Multipath y ruido.** Con una estación real: combinaciones
