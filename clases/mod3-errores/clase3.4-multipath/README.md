@@ -18,7 +18,7 @@ graph LR
     A[3.1 iono: modelar] --> B[3.2 iono: medir]
     B --> C[3.3 tropo: modelar]
     C --> D[3.4 multipath ★<br/>observar y mitigar]
-    D -.OSNMA.-> E[M4 autenticación]
+    D --> E[M4 órbitas y tiempo]
 ```
 
 Iono y tropo venían del cielo y afectaban a cualquier receptor de la
@@ -288,6 +288,8 @@ comparó la calidad de ambos sitios.
 
 **Fin del módulo 3.** Checkpoints antes de seguir: (1) ¿por qué la iono
 es dispersiva y la tropo no, y qué habilita eso? (2) ¿qué signo tiene la
-iono en código vs fase? Si los tenés, estás listo para el **módulo 4:
-OSNMA** — hasta acá aprendiste a limpiar la señal de errores del canal;
-ahora toca defenderla de errores *intencionales*.
+iono en código vs fase? Si los tenés, seguís con el **módulo 4: órbitas y tiempo** — de dónde
+salen las efemérides y relojes que venís usando desde la 1.5. (La
+autenticación OSNMA te espera en el módulo 6, con la integridad del 5
+en el medio: primero entender qué transmite el sistema, después cuánto
+confiar, y al final cómo verificarlo criptográficamente.)

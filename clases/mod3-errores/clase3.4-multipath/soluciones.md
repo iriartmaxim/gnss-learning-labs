@@ -108,7 +108,7 @@ en cada satélite un patrón MP(t) que se repite con el calendario
 orbital — el atacante no lo conoce ni puede reproducirlo por-PRN
 coherentemente, así que la *ruptura de la repetición esperada* delata.
 Es defensa por capa física, ortogonal a OSNMA (que autentica los datos,
-no el canal): juntas cierran la pinza — el módulo 4 empieza ahí.
+no el canal): juntas cierran la pinza — el módulo 6 empieza ahí.
 
 ## Mini-simulacro
 

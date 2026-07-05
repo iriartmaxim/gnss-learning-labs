@@ -90,7 +90,7 @@ diferencia en ~35 cm.
 **C5.** La tropo **no viaja en la señal**: el receptor la calcula solo,
 con datos locales — el spoofer ni la controla ni necesita falsificarla
 (a diferencia de efemérides y relojes del mensaje, que OSNMA protege en
-el módulo 4). No es canal de ataque directo; el vector exótico sería
+el módulo 6). No es canal de ataque directo; el vector exótico sería
 envenenar los datos meteo externos (modelos que alimentan VMF) en
 sistemas que los ingieren — cadena de suministro de datos, no RF. En
 GBAS el observable que sí preocupa es el **gradiente tropo anómalo**
