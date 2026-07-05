@@ -158,7 +158,7 @@ Objetivo: cuantificar cada error del Lab 1.5 y reducirlo.
 - [x] **Lab 3.3 — Troposfera.** Modelo de Saastamoinen + función de mapeo
   simple. Cuantificar el retardo cenital (~2.3 m) y su amplificación a baja
   elevación; efecto en la vertical de la solución.
-- [ ] **Lab 3.4 — Multipath y ruido.** Con una estación real: combinaciones
+- [x] **Lab 3.4 — Multipath y ruido.** Con una estación real: combinaciones
   de multipath código-menos-fase (MP1/MP2) y análisis por elevación.
   Validación: el multipath crece a baja elevación y se repite con la
   geometría sideral día a día.
