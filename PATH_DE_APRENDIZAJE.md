@@ -151,7 +151,7 @@ Objetivo: cuantificar cada error del Lab 1.5 y reducirlo.
   publica el código) o un port a Python. Graficar retardo vs. elevación y
   hora local. Validación: máximos a primeras horas de la tarde local y a
   baja elevación.
-- [ ] **Lab 3.2 — Combinación libre de ionosfera.** Con observables de
+- [x] **Lab 3.2 — Combinación libre de ionosfera.** Con observables de
   doble frecuencia (E1/E5a o L1/L5): formar la combinación iono-free y
   comparar la solución contra monofrecuencia; estimar el retardo oblicuo
   eliminado. Validación: mejora clara en la componente vertical.
