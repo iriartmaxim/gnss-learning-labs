@@ -177,7 +177,7 @@ Navipedia (Klobuchar, NeQuick-G, Saastamoinen).
 
 Mapea a **"Orbits Estimation & Clocks Synchro"**.
 
-- [ ] **Lab 4.1 — Propagador kepleriano vs. realidad.** Propagar una órbita
+- [x] **Lab 4.1 — Propagador kepleriano vs. realidad.** Propagar una órbita
   ideal de dos cuerpos y compararla contra la efeméride broadcast en un
   arco de horas: el residuo son las perturbaciones que la efeméride absorbe
   con sus correcciones.
