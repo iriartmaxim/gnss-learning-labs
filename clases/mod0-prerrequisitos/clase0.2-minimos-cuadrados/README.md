@@ -1,5 +1,7 @@
 # Clase 0.2 — Mínimos cuadrados, Gauss-Newton y rotaciones 3D
 
+> Bloque del máster: Prerrequisitos (transversal)
+
 > **Módulo 0 — Prerrequisitos** · Prerrequisito de: 1.1, 1.2, 1.4 (todo el módulo 1) · Duración estimada: 3–4 h
 
 Esta clase es el **motor matemático** de todo el curso. El posicionamiento GNSS
@@ -298,6 +300,18 @@ $$ R_x(\theta)=\!\begin{pmatrix}1&0&0\\0&c&-s\\0&s&c\end{pmatrix}\; R_y(\theta)=
 
 - `flashcards_anki.csv` — importalo en Anki (deck sugerido `GNSS::M0::0.2`).
 - `bitacora.md` — anotá tus números contra la tabla de validación y qué te costó.
+
+## 17. Rúbrica de cierre
+
+La clase se marca `[x]` en el README del repo **solo** si:
+
+- [ ] Blancos de la teoría (§3) completados y cotejados.
+- [ ] Los TODO del lab pasan sus auto-tests **sin haber abierto la solución**.
+- [ ] Tus números coinciden con la tabla de validación (§4).
+- [ ] E1–E3 resueltos en papel y cotejados con `soluciones.md`.
+- [ ] Mini-simulacro ≥ 4/5 en ≤ 8 minutos.
+- [ ] Flashcards importadas a Anki y primera pasada hecha.
+- [ ] Pregunta de entrevista respondida en voz alta en < 2 min (grabate y escuchate).
 
 **Próxima clase → 0.3 Mecánica orbital mínima**: Kepler, anomalías M/E/ν
 y por qué la efeméride trae OMEGA_DOT. Las rotaciones de la Parte E son
