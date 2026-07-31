@@ -1,6 +1,8 @@
 # Clase 1.1 — Trilateración: posición a partir de distancias
 
-**Módulo 1 · Fundamentos de posicionamiento** · mapea a *Algorithms & Positioning* (JSNP)
+> Bloque del máster: B1 — Basics · Técnicas de posicionamiento fiable y preciso
+
+**Módulo 1 · Fundamentos de posicionamiento**
 
 | | |
 |---|---|
