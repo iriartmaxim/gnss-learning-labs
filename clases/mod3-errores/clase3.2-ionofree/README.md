@@ -1,5 +1,7 @@
 # Clase 3.2 — Iono-free: medir la ionosfera y pagar el precio
 
+> Bloque del máster: B1 — Basics · Errores y modelos (semilla de B4 · Estimación de la ionosfera)
+
 **Módulo 3 · Fuentes de error · ~3.5 h**
 
 ## Objetivos
@@ -97,6 +99,21 @@ El error total es √(sesgo² + ruido²): con iono mansa (invierno, 8 AM,
 mínimo solar) el modelo puede ganar; con iono brava (14 h local, máximo
 solar, cinturón ecuatorial, tormenta) el sesgo explota y la doble
 frecuencia arrasa. No hay respuesta única — hay presupuesto de error.
+
+### Lectura activa (B1–B5)
+
+Completá releyendo la teoría; respuestas al final del bloque.
+
+- **B1.** γ = (f₁/f₅)² ≈ ______ para E1/E5a.
+- **B2.** La combinación iono-free pesa los códigos como P_IF ≈ ______·P₁ − ______·P₅.
+- **B3.** La divergencia P₅−P₁ mide la iono más dos sesgos de hardware: el ______ del satélite (viaja en el nav) y el ______ del receptor.
+- **B4.** El precio de eliminar la iono: el ruido no correlacionado se amplifica σ_IF ≈ ______·σ_P.
+- **B5.** IF de código puro conviene solo cuando el sesgo ionosférico supera al ______ ______ — si no, mejor modelo + suavizado, o fase (PPP).
+
+<details><summary>Respuestas</summary>
+
+B1: 1.793 · B2: 2.26 / 1.26 · B3: BGD / DCB · B4: 2.59 · B5: ruido amplificado
+</details>
 
 ## Lab guiado
 
