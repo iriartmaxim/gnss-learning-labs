@@ -1,5 +1,7 @@
 # Clase 1.3 — Efemérides: del mensaje de navegación a la posición del satélite
 
+> Bloque del máster: B1 — Basics · Órbitas & relojes atómicos
+
 **Módulo 1 · Posicionamiento · ~3 h**
 
 ## Objetivos
