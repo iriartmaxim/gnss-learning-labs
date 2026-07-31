@@ -1,5 +1,7 @@
 # Clase 3.1 — Ionosfera: los modelos broadcast (Klobuchar y NeQuick-G)
 
+> Bloque del máster: B1 — Basics · Errores y modelos de caracterización / corrección
+
 **Módulo 3 · Fuentes de error · ~3.5 h**
 
 ## Objetivos
@@ -104,6 +106,21 @@ sí (⭐⭐⭐).
 
 La moraleja del módulo: cada fuente de error tiene una jerarquía así, y
 elegir dónde pararte es ingeniería de sistema (costo, potencia, precisión).
+
+### Lectura activa (B1–B5)
+
+Completá releyendo la teoría; respuestas al final del bloque.
+
+- **B1.** 1 TECU = 10¹⁶ el/m² equivale a ~______ m de retardo en L1.
+- **B2.** Nota de signo: la ionosfera ______ el código y ______ la fase.
+- **B3.** Klobuchar usa ______ coeficientes (α₀..α₃, β₀..β₃), corrige ~50% RMS y de noche deja un piso de ______ ns.
+- **B4.** NeQuick-G transmite solo ______ coeficientes (ai0, ai1, ai2) pero evalúa un modelo 3D de densidad electrónica.
+- **B5.** El pico diurno cae cerca de las ______ hora local, y la oblicuidad amplifica: F(5°) ≈ ______.
+
+<details><summary>Respuestas</summary>
+
+B1: 0.162 · B2: retrasa / adelanta · B3: 8 / 5 · B4: 3 · B5: 14:00 / 3.03
+</details>
 
 ## Lab guiado
 
