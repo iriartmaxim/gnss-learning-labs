@@ -1,5 +1,7 @@
 # Clase 2.3 — Tracking: seguir el satélite y leer sus bits
 
+> Bloque del máster: B3 — Signals · Técnicas de adquisición y tracking
+
 **Módulo 2 · Señales y SDR · ~4 h**
 
 ## Objetivos
