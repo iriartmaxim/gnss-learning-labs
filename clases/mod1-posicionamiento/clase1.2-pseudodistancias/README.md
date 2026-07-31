@@ -1,6 +1,8 @@
 # Clase 1.2 — Pseudodistancias y sesgo de reloj del receptor
 
-**Módulo 1 · Fundamentos de posicionamiento** · mapea a *Algorithms & Positioning* (JSNP)
+> Bloque del máster: B1 — Basics · Técnicas de posicionamiento fiable y preciso
+
+**Módulo 1 · Fundamentos de posicionamiento**
 
 | | |
 |---|---|
@@ -289,7 +291,7 @@ Copiá [`bitacora.md`](bitacora.md) o completala en el lugar: fecha, tiempo real
 
 ## 15. Rúbrica de cierre
 
-La clase se marca `[x]` en el path **solo** si:
+La clase se marca `[x]` en el README del repo **solo** si:
 
 - [ ] Blancos B1–B5 completados y cotejados.
 - [ ] Los 4 `TODO` del lab pasan sus auto-tests **sin haber abierto la solución**.
