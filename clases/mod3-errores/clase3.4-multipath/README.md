@@ -1,5 +1,7 @@
 # Clase 3.4 — Multipath y ruido: el error que vive en tu antena
 
+> Bloque del máster: B1 — Basics · Errores y modelos de caracterización / corrección
+
 **Módulo 3 · Fuentes de error · ~3.5 h**
 
 ## Objetivos
@@ -111,6 +113,21 @@ corrido −2430 s (teórico −2359), y ~0 sin corrimiento.
 Nada global te salva del multipath: no viaja en la señal ni en la
 corrección de nadie. Sitio, antena y procesamiento — o convertirlo en
 sensor (ver caso real).
+
+### Lectura activa (B1–B5)
+
+Completá releyendo la teoría; respuestas al final del bloque.
+
+- **B1.** La combinación MP (P − 3.521·Φ₁ + 2.521·Φ₅) elimina geometría, relojes, tropo e ______ — lo que queda es multipath + ruido.
+- **B2.** La asimetría: el eco sesga fuerte al ______ (metros) y poco a la ______ (centímetros como máximo, un cuarto de ciclo).
+- **B3.** Firma en elevación: a 10–20° el RMS del MP1 es ~______ veces el de 60–90° — el argumento físico del cutoff.
+- **B4.** E5a resiste mejor por su chip corto: ______ m contra 293 m del chip E1.
+- **B5.** La memoria geométrica de Galileo repite cada ______ días (17 revoluciones), con lag teórico de ______ s.
+
+<details><summary>Respuestas</summary>
+
+B1: iono · B2: código / fase · B3: 3.2 · B4: 29 · B5: 10 / −2359
+</details>
 
 ## Lab guiado
 
