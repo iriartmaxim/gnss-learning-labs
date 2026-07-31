@@ -1,5 +1,7 @@
 # Clase 4.1 — Propagador kepleriano vs realidad
 
+> Bloque del máster: B1 — Basics · Órbitas & relojes atómicos (conexión B4: segmento terreno)
+
 **Módulo 4 · Órbitas y tiempo · ~3 h**
 
 ## Objetivos
@@ -92,6 +94,21 @@ elige la efeméride con Toe más cercano (tu `elegir_efemeride`). El salto
 entre efemérides consecutivas —lo que el operador re-ajustó— es una
 medida directa de cuánto "se movió" la realidad respecto del modelo
 viejo: en Galileo, sub-métrico.
+
+### Lectura activa (B1–B5)
+
+Completá releyendo la teoría; respuestas al final del bloque.
+
+- **B1.** Una elipse pura de dos cuerpos, extrapolada 12 h, acumula ~______ m de error — por eso la efeméride trae parches.
+- **B2.** Δn e IDOT son correcciones ∝ ______: se anulan exactamente en ______ y crecen al alejarse.
+- **B3.** Los seis armónicos Cxx corrigen sobre todo ______, que actúa siempre — su residuo NO se anula en Toe (208 m ahí).
+- **B4.** La corrección que más absorbe: apagar Δn deja un residuo máximo de ______ m en el arco.
+- **B5.** Los saltos de ______ (~0.7 m) entre efemérides consecutivas son la huella observable del segmento de control re-ajustando la órbita.
+
+<details><summary>Respuestas</summary>
+
+B1: 3603 · B2: tk / Toe · B3: J2 (el achatamiento) · B4: 546 · B5: empalme
+</details>
 
 ## Lab guiado
 
