@@ -1,5 +1,7 @@
 # Clase 1.5 — Tu primer fix: PVT con Galileo y datos reales
 
+> Bloque del máster: B1 — Basics · Cálculo de posición (PVT) y filtros de estimación básicos
+
 **Módulo 1 · Posicionamiento · ~4 h · cierre del módulo**
 
 ## Objetivos
