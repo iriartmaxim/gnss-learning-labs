@@ -1,5 +1,7 @@
 # Clase 3.3 — Troposfera: el error que no se puede restar
 
+> Bloque del máster: B1 — Basics · Propagación atmosférica: ionosfera, troposfera
+
 **Módulo 3 · Fuentes de error · ~3 h**
 
 ## Objetivos
@@ -96,6 +98,21 @@ separan coeficientes secos y húmedos.
 
 Grande + predecible ⇒ se modela. Grande + salvaje ⇒ se mide. Ese
 criterio ordena todo el diseño de receptores.
+
+### Lectura activa (B1–B5)
+
+Completá releyendo la teoría; respuestas al final del bloque.
+
+- **B1.** A diferencia de la iono, el retardo troposférico no depende de la ______ — por eso la doble frecuencia no lo elimina.
+- **B2.** El ZHD cenital vale ≈ ______ m y, con presión de barómetro, el equilibrio hidrostático lo deja clavado a ~1 mm.
+- **B3.** El rebelde es el ______ ______ ______: no está en equilibrio hidrostático (ZWD ~0.05–0.4 m) — por eso el PPP lo estima como incógnita.
+- **B4.** El mapeo castiga la baja elevación: a 5° el retardo cenital se multiplica por ~______ (≈27 m oblicuos).
+- **B5.** En el PVT de la 1.5, pasar del modelo mínimo a Saastamoinen completo agrega el ______ que faltaba (+0.098 m en el cenit).
+
+<details><summary>Respuestas</summary>
+
+B1: frecuencia · B2: 2.3 · B3: vapor de agua · B4: 11.5 · B5: ZWD
+</details>
 
 ## Lab guiado
 
