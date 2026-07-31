@@ -253,7 +253,7 @@ if __name__ == "__main__":
 
     # [G] cascada: que pasa si "olvido" cada correccion (epoca 12:00)
     casc = {"completo": float(np.linalg.norm(e2))}
-    sin_rel = []
+    sin_rel, sin_sag, sin_clk = [], [], []
     for s, el in usados:
         ef = elegir_efemeride(efs[s], t_rx)
         P1 = float(ep.sel(sv=s)["C1X"]); P5 = float(ep.sel(sv=s)["C5X"])
@@ -263,14 +263,29 @@ if __name__ == "__main__":
         rel = (-2*np.sqrt(MU*ef["sqrtA"]**2)*ef["Eccentricity"]
                * np.sin(kepler_E(ef, tk))) / C**2
         sin_rel.append((xyz, Pc - C*rel))          # quito la relatividad
+        tau = np.linalg.norm(xyz - fix2[:3]) / C
+        a = -OMEGA_E * tau                         # des-roto Sagnac
+        rot = np.array([[np.cos(a), np.sin(a), 0],
+                        [-np.sin(a), np.cos(a), 0],
+                        [0, 0, 1]])
+        sin_sag.append((rot @ xyz, Pc))            # quito la rotacion Sagnac
+        sin_clk.append((xyz, Pc - C*reloj_sat(ef, t_rx - P/C)))  # quito el reloj
     fr, _, _ = gauss_newton_pvt(np.array([d[0] for d in sin_rel]),
                                 np.array([d[1] for d in sin_rel]), fix2[:3])
     casc["sin_relatividad"] = float(np.linalg.norm(error_enu(fr[:3])))
     casc["sin_tropo"] = float(np.linalg.norm(e1))
+    fs, _, _ = gauss_newton_pvt(np.array([d[0] for d in sin_sag]),
+                                np.array([d[1] for d in sin_sag]), fix2[:3])
+    casc["sin_sagnac"] = float(np.linalg.norm(error_enu(fs[:3])))
+    fc, _, _ = gauss_newton_pvt(np.array([d[0] for d in sin_clk]),
+                                np.array([d[1] for d in sin_clk]), fix2[:3])
+    casc["sin_reloj_sat"] = float(np.linalg.norm(error_enu(fc[:3])))
     json.dump({"epoca": "2026-06-15T12:00", "usados": usados,
                "enu_12": [float(v) for v in e2], "serie": S.tolist(),
                "rms_enu": rms.tolist(), "cascada": casc},
               open("clases/mod1-posicionamiento/clase1.5-pvt/data/resultados_1_5.json", "w"))
     print(f"\n[G] 3D completo {casc['completo']:.2f} m | sin relatividad "
-          f"{casc['sin_relatividad']:.2f} m | sin tropo {casc['sin_tropo']:.2f} m")
+          f"{casc['sin_relatividad']:.2f} m | sin tropo {casc['sin_tropo']:.2f} m | "
+          f"sin Sagnac {casc['sin_sagnac']:.1f} m | "
+          f"sin reloj sat {casc['sin_reloj_sat']/1000:.1f} km")
     print("\nLISTO: resultados guardados para las figuras")
