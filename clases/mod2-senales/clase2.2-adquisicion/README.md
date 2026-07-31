@@ -4,6 +4,11 @@
 
 **Módulo 2 · Señales y SDR · ~4 h**
 
+![Adquisición: la aguja en el pajar](img/fig4_hero_adquisicion.svg)
+
+*La clase en una imagen: en un f_D equivocado la correlación es ruido;
+en el correcto aparece la aguja — datos reales de la captura PRN1.*
+
 ## Objetivos
 
 - [ ] Entender la adquisición como una búsqueda 2D: desfase de código × Doppler
@@ -157,6 +162,22 @@ encontrás?"* — Guía: PCPS por cada PRN, grilla Doppler ±5 kHz, FFT por la
 fase de código, umbral sobre pico/piso; los presentes sobresalen. Es el
 cold-start, y el costo (delay×Doppler×PRN) es la razón de ser de A-GPS.
 
+### Guion de 90 segundos (grabate y escuchate)
+
+1. **Hook (10 s)**: "un receptor recién prendido escucha puro ruido: la
+   señal GPS llega 20 dB abajo del piso. Adquirir es encontrarla".
+2. **Las dos incógnitas (25 s)**: no sabés cuándo arranca el código (τ,
+   1023 chips) ni a qué frecuencia llega (Doppler, ±5 kHz por el
+   movimiento del satélite). Es una búsqueda 2D: ~40 000 celdas de
+   1 chip × 250 Hz.
+3. **El truco (35 s)**: PCPS — para cada Doppler, UNA FFT prueba las 1023
+   fases de código de un saque (correlación circular = producto en
+   frecuencia). Donde la réplica alinea, la energía se apila: la aguja
+   sobresale del pajar y la métrica pico/piso decide.
+4. **Cierre (20 s)**: "con la captura real detecté PRN1 en 523 muestras y
+   +1750 Hz — el mismo Doppler que gnss-sdr, el receptor de referencia.
+   Después el tracking refina a metros: eso es la clase 2.3".
+
 ## Mini-simulacro (15 min)
 
 1. Escribí el pseudocódigo PCPS para un PRN: entradas, la FFT, el barrido
@@ -173,6 +194,8 @@ cold-start, y el costo (delay×Doppler×PRN) es la razón de ser de A-GPS.
 | `img/fig1_caf_gps.svg` | Función de ambigüedad GPS: pico único en (524, +1680) |
 | `img/fig2_corte_gps.svg` | Corte en el Doppler del pico: el triángulo de ±1 chip |
 | `img/fig3_skysearch.svg` | Sky-search CTTC: métrica por PRN, los visibles en verde |
+| `img/fig4_hero_adquisicion.svg` | La búsqueda en una imagen: ruido vs aguja, y el plano completo |
+| `img/anim_busqueda_gps.gif` | El barrido Doppler animado (regenerable con `make_anim.py`) |
 
 ## Caso real — el arranque en frío y por qué tu teléfono "hace trampa"
 
@@ -227,6 +250,14 @@ delay→metros: (524/4e6)·c = 39.3 km mod 300 km (ambigüedad de 1 ms)
 - Tsui, *Fundamentals of GPS Receivers: A Software Approach* — adquisición FFT
 - Galileo OS SIS ICD v2.1 — E1 CBOC, códigos primarios de memoria
 - Misra & Enge, cap. 11 (adquisición y seguimiento)
+
+### Para ver (en español)
+
+Links verificados el 2026-07-30; si alguno muere, buscá por título.
+
+- [Señal GPS: portadora, código y mensaje — N. Garrido-Villén (UPV)](https://nagarvil.webs.upv.es/senal-gps/) — videolección + apunte de la anatomía de la señal que estás adquiriendo; del mismo curso hay lecciones de receptores y métodos.
+- [Adquisición de señales GNSS mediante técnicas de estimación espectral no convencionales (U. Sergio Arboleda, 2023)](https://www.youtube.com/watch?v=LscskShGWms) — seminario específicamente sobre adquisición; útil ver cómo formulan la misma búsqueda τ×f_D con otras herramientas espectrales.
+- [Playlist "Procesamiento GNSS"](https://www.youtube.com/playlist?list=PL3aDiHN3oVI7sEHV9Vp10aTOYiApSQT4n) — panorama en español de la cadena de procesamiento; calidad variable, sirve como repaso pasivo.
 
 ## Para tu bitácora
 

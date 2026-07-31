@@ -78,3 +78,32 @@ ax.grid(alpha=0.3, axis="y")
 fig.tight_layout()
 fig.savefig(aca / "fig3_skysearch.svg")
 print("figuras escritas:", sorted(p.name for p in aca.glob("*.svg")))
+
+# fig4 (hero): la aguja aparece solo en el bin correcto — todo desde el JSON
+i_pico, j_pico = np.unravel_index(grid.argmax(), grid.shape)
+chips = np.linspace(0, 1023, grid.shape[1])
+fig = plt.figure(figsize=(10, 4.4))
+gs = fig.add_gridspec(2, 2, width_ratios=[1.35, 1], hspace=0.45, wspace=0.28)
+a1 = fig.add_subplot(gs[0, 0])
+a1.plot(chips, grid[0], lw=0.6, color="#888888")
+a1.set_title(f"f_D equivocado ({dops[0]:+d} Hz): solo ruido", fontsize=9)
+a1.set_xticks([])
+a2 = fig.add_subplot(gs[1, 0])
+a2.plot(chips, grid[i_pico], lw=0.6, color="#205080")
+a2.annotate("la aguja", (chips[j_pico], grid[i_pico, j_pico]),
+            xytext=(chips[j_pico] + 180, grid[i_pico, j_pico] * 0.82),
+            fontsize=9, color="#b03030",
+            arrowprops=dict(arrowstyle="->", color="#b03030"))
+a2.set_title(f"f_D correcto ({dops[i_pico]:+d} Hz): pico en "
+             f"{gps['delay']} muestras (~134 chips)", fontsize=9)
+a2.set_xlabel("desfase de código (chips)")
+a3 = fig.add_subplot(gs[:, 1])
+a3.imshow(grid, aspect="auto", origin="lower", extent=ext, cmap="viridis",
+          vmax=np.percentile(grid, 99.5))
+a3.plot(gps["delay"] * 1e3 / 4000, gps["doppler"], "rx", ms=10, mew=2)
+a3.set_title("el plano completo τ × f_D", fontsize=9)
+a3.set_xlabel("chips"); a3.set_ylabel("Doppler (Hz)")
+fig.suptitle("Adquisición = encontrar la aguja en el pajar (captura real, PRN1)",
+             fontsize=11)
+fig.savefig(aca / "fig4_hero_adquisicion.svg", bbox_inches="tight")
+print("fig4_hero_adquisicion.svg")
