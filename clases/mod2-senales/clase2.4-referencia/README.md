@@ -1,5 +1,7 @@
 # Clase 2.4 — Receptor de referencia: validá tu cadena contra gnss-sdr
 
+> Bloque del máster: B3 — Signals · Técnicas de adquisición y tracking
+
 **Módulo 2 · Señales y SDR · ~3 h · cierra el módulo 2**
 
 ## Objetivos
@@ -82,6 +84,21 @@ intentar demodular). El truco: **repetir la captura** decenas de veces en
 un archivo temporal (`np.tile`). No es "más señal real" —es la misma
 seccionada en loop— pero le da a gnss-sdr material para correr su máquina
 de estados y mostrar que engancha el satélite.
+
+### Lectura activa (B1–B5)
+
+Completá releyendo la teoría; respuestas al final del bloque.
+
+- **B1.** gnss-sdr implementa la cadena completa del receptor: adquisición, tracking, demodulación, observables y ______.
+- **B2.** Sobre la misma captura, lo que tiene que coincidir con tu receptor (±½ celda de grilla) es el ______; el desfase de código puede diferir.
+- **B3.** El desfase difiere porque es relativo al ______ de procesamiento (el `sample_stamp`): módulo 1023 chips sigue siendo el mismo satélite.
+- **B4.** Toda la cadena se declara por bloques en un archivo ______ (SignalSource, Acquisition, Tracking, …).
+- **B5.** Con capturas de 2–8 ms, para que gnss-sdr complete su flujo la captura se ______ en loop (`np.tile`) — no es más señal real, es material para su máquina de estados.
+
+<details><summary>Respuestas</summary>
+
+B1: el PVT · B2: el Doppler · B3: punto de arranque · B4: `.conf` (INI) · B5: repite
+</details>
 
 ## Lab guiado
 
