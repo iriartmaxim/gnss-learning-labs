@@ -1,5 +1,7 @@
 # Clase 0.3 — Mecánica orbital mínima (para leer una efeméride)
 
+> Bloque del máster: Prerrequisitos (transversal)
+
 > **Módulo 0 — Prerrequisitos** · Requiere: 0.2 (rotaciones) · Prerrequisito de: 1.3 · Duración estimada: 3–4 h
 
 Objetivo quirúrgico: **lo justo** de mecánica orbital para que una
@@ -291,6 +293,18 @@ Constantes: μ = 3.986004418×10¹⁴ m³/s² · Re = 6 378 137 m · J2 = 1.0826
 
 - `flashcards_anki.csv` — deck sugerido `GNSS::M0::0.3`.
 - `bitacora.md` — tus números vs la tabla de validación.
+
+## 17. Rúbrica de cierre
+
+La clase se marca `[x]` en el README del repo **solo** si:
+
+- [ ] Blancos de la teoría (§3) completados y cotejados.
+- [ ] Los TODO del lab pasan sus auto-tests **sin haber abierto la solución**.
+- [ ] Tus números coinciden con la tabla de validación (§4).
+- [ ] E1–E3 resueltos en papel y cotejados con `soluciones.md`.
+- [ ] Mini-simulacro ≥ 4/5 en ≤ 8 minutos.
+- [ ] Flashcards importadas a Anki y primera pasada hecha.
+- [ ] Pregunta de entrevista respondida en voz alta en < 2 min (grabate y escuchate).
 
 **Próxima clase → 0.4 Pipeline de datos**: de dónde bajar RINEX, SP3 y
 CLK reales (BKG, CDDIS, RAMSAC) y el script `tools/fetch_data.py` que
