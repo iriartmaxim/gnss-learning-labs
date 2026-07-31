@@ -1,5 +1,7 @@
 # Clase 2.1 — Códigos C/A: la matemática que reparte el espectro
 
+> Bloque del máster: B3 — Signals · Definición y procesamiento de señales GNSS
+
 **Módulo 2 · Señales y SDR · ~3 h**
 
 ## Objetivos
