@@ -1,5 +1,7 @@
 # Clase 0.1 — Entorno de trabajo
 
+> Bloque del máster: Prerrequisitos (transversal)
+
 > **Módulo 0 — Prerrequisitos** · Prerrequisito de: todo · Duración: 30–60 min
 
 Clase corta y utilitaria: dejar el entorno listo y **verificado por
@@ -14,7 +16,7 @@ verificador.
 
 ## Setup
 
-### Opción A — entorno del sistema (WSL2 / Linux)
+### Opción A — entorno del sistema — Ubuntu (PCHOME)
 
 ```bash
 pip install numpy scipy matplotlib pandas cryptography \
