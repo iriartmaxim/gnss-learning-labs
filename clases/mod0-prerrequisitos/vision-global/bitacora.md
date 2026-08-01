@@ -1,33 +1,23 @@
 # Bitácora — Visión global
 
-> Completá esto al terminar. Es tu evidencia de trabajo y tu material de repaso.
+**Fecha**: ____ · **Tiempo**: ____
 
-**Fecha**: ____ · **Tiempo invertido**: ____ h
+## El arco en mis palabras
 
-## Mi inventario del arco
+> (escribí tu versión de señal→observable→error→órbita→PVT en una frase)
 
-| Etapa | Archivos | MB |
-|---|---|---|
-| Señal (IQ) | | |
-| Observables | | |
-| Mensaje/órbitas | | |
-| Verdad precisa | | |
-| Productos | | |
+## Mapeo del lab-lite
 
-Referencia: 5/5 pobladas, ~22 artefactos, ~150 MB.
+- [ ] `lab_arco_TODO.py` termina en "MAPEO OK" con mis datos de 0.4.
 
 ## Mini-simulacro
 
-Puntaje: ___ / 5 (aprobado con 4)
+Puntaje: ___ / 5
 
-## El arco de memoria (E1): ¿salió completo?
+## Qué eslabón me resulta más borroso hoy
 
--
+- (volvé acá al terminar cada módulo y actualizá)
 
-## Qué conecté con otras clases
-
--
-
-## Pendientes / dudas para repasar
+## Pendientes
 
 -

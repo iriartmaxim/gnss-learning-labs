@@ -1,223 +1,230 @@
-# Visión global — la tecnología de la navegación en un arco
+# Visión global de la tecnología de navegación
 
 > Bloque del máster: B1 — Basics · Visión global de la tecnología de la navegación
 
-La clase que faltaba al principio: **el mapa antes del territorio**. Todo
-GNSS cabe en un arco de cinco etapas — señal → observables → mensaje/
-órbitas → correcciones → solución — y cada clase del path trabaja un
-tramo. Acá se dibuja el arco entero y se comprueba, con los archivos de
-tu disco, que ya lo tenés completo.
+**Objetivo en una frase**: tener el mapa mental completo —el arco
+**señal → observable → error → órbita → PVT**— antes de bajar al detalle
+de cada clase, para saber siempre *dónde estás parado* en el sistema.
 
-**Tiempo estimado**: 1.5–2 h (teoría 45' · lab 20' · ejercicios y simulacro 30').
+**Tiempo estimado**: 1–1.5 h (teoría 30' · lab-lite 20' · ejercicios y cierre 30').
 
 ## 1. Objetivos
 
-- [ ] Dibujar de memoria el arco señal → observable → mensaje → corrección → PVT y ubicar cada clase del path en él
-- [ ] Explicar los tres segmentos (espacial / control / usuario) y qué falla cuando falla cada uno
-- [ ] Manejar los números gruesos: alturas, potencia recibida, frecuencias, 4 incógnitas
-- [ ] Verificar con el lab que las 5 etapas del arco tienen datos reales en tu máquina
+- [ ] Nombrar los tres segmentos de un GNSS (espacial, control, usuario) y qué hace cada uno.
+- [ ] Recorrer el arco señal→observable→error→órbita→PVT y ubicar cada clase del path en él.
+- [ ] Distinguir los cuatro observables (código, fase, Doppler, C/N0) y para qué sirve cada uno.
+- [ ] Explicar por qué "posición" es en realidad **PVT** (posición, velocidad **y tiempo**).
 
 ## 2. Dónde estás en el mapa
 
 ```mermaid
 flowchart LR
-    subgraph ARCO[el arco completo]
-        S[señal RF<br/>mod2] --> O[observables<br/>1.2, 1.5]
-        O --> E[errores<br/>mod3] --> P[PVT<br/>1.5]
-        M[mensaje/órbitas<br/>1.3, 4.1] --> P
-        V[verdad precisa<br/>SP3/CLK] -.califica.-> M
+    subgraph ESP[Segmento espacial]
+      SAT[satélites: relojes atómicos<br/>+ generan la señal]
     end
-    P --> AV[avanzado: integridad, precisas, seguridad<br/>mod5/6/7]
+    subgraph CTRL[Segmento de control]
+      GS[estaciones terrenas:<br/>calculan efemérides y relojes]
+    end
+    subgraph USR[Segmento usuario]
+      RX[tu receptor]
+    end
+    GS -->|suben efeméride| SAT
+    SAT -->|señal en el espacio| RX
+    RX --> ARCO
+    subgraph ARCO[El arco que recorre el path]
+      S[señal] --> O[observable] --> E[error] --> OR[órbita] --> PVT[PVT]
+    end
 ```
 
-Esta clase es transversal: no depende de ninguna y las nombra a todas.
+Esta clase no tiene teoría nueva: es el **andamio** donde cuelgan todas
+las demás. Cada flecha del arco es un módulo del repo.
 
 ## 3. Teoría
 
-### 3.1 Qué es PNT y por qué satélites
+### 1. Los tres segmentos
 
-**PNT** = posición, navegación y tiempo. El truco GNSS: relojes atómicos
-volando en órbitas conocidas que gritan la hora; medir *cuánto tardó el
-grito* convierte tiempo en distancia ($c \approx 0{,}3$ m/ns — por eso
-todo el curso obsesiona con nanosegundos). Con 4 mediciones se despejan
-las **4 incógnitas** $(x, y, z, c\,\delta t)$: la clase 1.2 en una frase.
+Todo GNSS se organiza en tres partes:
 
-### 3.2 Los tres segmentos
+- **Segmento espacial**: los satélites. Llevan **relojes atómicos** y
+  transmiten una señal con código, portadora y mensaje de navegación.
+  (El detalle de la señal: mod2; los relojes y órbitas: mod4.)
+- **Segmento de control**: una red de estaciones en tierra que observa a
+  los satélites, calcula sus **órbitas y relojes**, y **sube** la
+  efeméride fresca que cada satélite retransmite. (Lo ves como huella
+  observable en 4.1; el pipeline que baja esos productos, en 0.4.)
+- **Segmento usuario**: tu receptor, que hace toda la cadena
+  adquisición→tracking→observables→PVT. (mod2 lo recorre por dentro;
+  mod1 resuelve el PVT.)
 
-| Segmento | Qué hace | Cuando falla… |
+### 2. El arco del path
+
+El corazón del curso es una sola cadena causal:
+
+$$\text{señal} \rightarrow \text{observable} \rightarrow \text{error} \rightarrow \text{órbita} \rightarrow \text{PVT}$$
+
+| Eslabón | Qué es | Dónde vive en el repo |
 |---|---|---|
-| **Espacial** | constelaciones que emiten señal + mensaje (clase constelaciones) | casi nunca falla solo: hay 30 por sistema |
-| **Control / terreno** | mide, ajusta órbitas y relojes, sube efemérides frescas (4.1) | falla TODO a la vez: Galileo 2019, GLONASS 2014 |
-| **Usuario** | tu receptor: antena → RF → correladores → PVT (mod2 + 1.5) | tu problema — y el tema de este path |
+| **señal** | ondas de radio con código + portadora + datos | mod2 (2.1–2.4) |
+| **observable** | número que el receptor mide: pseudodistancia, fase, Doppler, C/N0 | 1.5, 3.4, 2.2 |
+| **error** | lo que separa la medición de la verdad: iono, tropo, multipath, reloj | mod3 (3.1–3.4) |
+| **órbita** | dónde estaba el satélite cuando emitió | 1.3, 4.1 |
+| **PVT** | la solución: posición, velocidad y tiempo | 1.5 (+ filtros mod7) |
 
-La moraleja que el path repite: **los incidentes históricos son casi
-siempre del segmento terreno** — por eso el máster le dedica el B4.
+### 3. Los cuatro observables
 
-### 3.3 El arco, etapa por etapa
+El receptor no mide "distancia": mide cuatro cosas, cada una con su uso.
 
-1. **Señal**: ~27 W transmitidos a 20 000 km → llegan ~$10^{-16}$ W
-   (−158 dBW), 20 dB debajo del piso de ruido: la señal está *enterrada*
-   y solo la correlación la rescata (2.1–2.2).
-2. **Observables**: pseudodistancia (código), fase, Doppler, C/N0 —
-   cuatro formas de medir la misma llegada (1.5, 3.4).
-3. **Mensaje**: efemérides + reloj + iono, re-emitido cada pocas horas
-   (0.4, 1.3). Caduca: es la parte viva del sistema.
-4. **Correcciones**: modelar (tropo), medir (iono), mitigar (multipath),
-   promediar (ruido) — mod3 entero en una línea.
-5. **Solución**: Gauss-Newton sobre la matriz de geometría (1.2 → 1.5);
-   su calidad la gobierna el DOP (1.4); su confianza, la integridad (B2).
+| Observable | Qué mide | Precisión típica | Se trabaja en |
+|---|---|---|---|
+| **código** (pseudodistancia) | tiempo de vuelo × c | ~metros | 1.5 |
+| **fase de portadora** | ciclos de la onda (ambiguos) | ~milímetros | 3.4, PPP (7.4) |
+| **Doppler** | corrimiento de frecuencia → velocidad | cm/s | 2.2, EKF (7.2) |
+| **C/N0 (SNR)** | potencia recibida / ruido | dB-Hz | 2.2–2.3, anti-spoofing (6.4) |
 
-Y en paralelo, la **verdad precisa** (SP3/CLK de centros de análisis)
-para calificar todo lo anterior — la vara del curso.
+### 4. Por qué es PVT y no solo posición
 
-### 3.4 Frecuencias que hay que reconocer
+El receptor tiene **cuatro** incógnitas, no tres: $x, y, z$ **y el sesgo
+de su propio reloj** $c\,\delta t$. Por eso hacen falta **≥4 satélites**
+(una ecuación por satélite). Y como el reloj se resuelve, el GNSS es
+además la fuente de **tiempo** más difundida del planeta (redes, banca,
+energía). De ahí la T de PVT.
 
-L1/E1 = 1575.42 MHz · L5/E5a = 1176.45 MHz · L2 = 1227.60 · E6 = 1278.75.
-Dos frecuencias ⇒ se mide la iono (3.2). Banda L: atraviesa nubes y
-lluvia (por eso navega el mundo con ~$10^{-16}$ W y no con radar).
+## 4. Lab-lite: mapear el arco con tus propios archivos
 
-## 4. Lab (lite)
+No hay número que calcular acá: el ejercicio es **reconocer**, en los
+datos que ya bajaste (clase 0.4), qué eslabón del arco alimenta cada
+archivo.
 
 ```bash
-python3 clases/mod0-prerrequisitos/vision-global/lab/lab_vision_TODO.py    # tu turno
-python3 clases/mod0-prerrequisitos/vision-global/lab/soluciones/lab_vision_solucion.py
+python3 clases/mod0-prerrequisitos/vision-global/lab/lab_arco_TODO.py
 ```
 
-4 TODOs: mapear cada etapa del arco a su huella en disco (globs),
-inventariar, imprimir el arco con tus archivos y chequear que las **5
-etapas están pobladas**. Termina en `ARCO COMPLETO`.
+El script lista tu `data/raw/` y te pide clasificar cada archivo por
+eslabón (señal / observable / órbita / …); el auto-test confirma el
+mapeo. La solución de referencia está en `lab/soluciones/`.
 
-### Tabla de validación
+### Criterio de validación
 
-| Chequeo | Valor esperado |
-|---|---|
-| Etapas con archivos reales | **5/5** |
-| Artefactos totales | ≥ 15 (con 0.4 + labs corridos: ~22) |
-| Volumen aproximado | ~150 MB |
+El mapeo correcto (lo chequea el lab): `.dat` → **señal** (mod2) ·
+`*_MO.rnx` (obs) → **observable** (1.5) · `*_MN.rnx` (nav) + `*ORB.SP3`
+→ **órbita** (1.3) · `*CLK.CLK` → corrección de **reloj** (error/1.5).
 
 ## 5. Ejercicios a mano
 
-**E1.** Dibujá el arco de memoria y ubicá las 18+ clases del path en sus
-etapas. Compará con el mermaid de §2.
+**E1.** Ordená estos cinco términos en el arco causal y decí qué módulo
+del path los cubre: *DOP, Klobuchar, ecuación de Kepler, código C/A,
+Gauss-Newton*.
 
-**E2.** Presupuesto de señal grueso: 27 W ≈ 14.3 dBW transmitidos,
-ganancia de antena ~13 dB, pérdida de espacio libre a 20 200 km y
-1575 MHz ≈ 182 dB. ¿Cuánto llega? (~−155 dBW: el orden es lo que importa.)
+**E2.** Un receptor ve 6 satélites. ¿Cuántas incógnitas tiene y cuántas
+ecuaciones? ¿Cuántos grados de redundancia quedan, y para qué sirven
+(pista: mod5)?
 
-**E3.** Clasificá en segmentos: (a) subida de efemérides, (b) tu antena,
-(c) máser de hidrógeno en órbita, (d) estación de monitoreo, (e) el
-BRDC de BKG. (Ojo con (e): ¿quién lo produce y quién lo compila?)
+**E3.** ¿Cuál de los tres segmentos falla en cada caso? (a) una tormenta
+solar degrada la señal en el trayecto; (b) el satélite emite una
+efeméride vieja; (c) tu teléfono tarda 30 s en dar posición en frío.
 
 ## 6. Estimaciones Fermi
 
-**F1.** ¿Cuántos receptores GNSS hay en el mundo? (Smartphones ~7×10⁹ +
-vehículos + infraestructura → orden 10¹⁰.)
+**F1.** La señal viaja del satélite (~20 200 km) a c. ¿Cuánto tarda?
+¿Cuánto error de rango implica 1 µs de error de reloj?
 
-**F2.** Si la señal llega con 10⁻¹⁶ W, ¿cuántos años necesitaría tu
-celular para juntar 1 joule de energía GPS? (~3×10⁸ años: nadie "carga
-el teléfono" con GPS — se navega con correlación, no con potencia.)
+**F2.** Si el segmento de control sube una efeméride cada 2 h y hay 30
+satélites Galileo, ¿cuántos "upload" diarios hace la red de control?
 
 ## 7. Preguntas conceptuales
 
-Respuestas en `soluciones.md` — primero por escrito.
+Respuestas en `soluciones.md` — contestá antes de mirar.
 
-**C1.** ¿Por qué el sistema entero depende de que el segmento de control
-suba efemérides cada pocas horas? ¿Qué pasa si para (y cómo lo viste ya
-en dos casos reales)?
+**C1.** ¿Por qué se llama "pseudo"distancia y no distancia?
 
-**C2.** ¿Por qué hacen falta 4 satélites y no 3, si las incógnitas de
-posición son 3?
+**C2.** ¿Qué tienen en común el segmento de control de un GNSS y el
+pipeline `fetch_data.py` de la clase 0.4?
 
-**C3.** ¿Qué diferencia al arco broadcast (tiempo real) del arco preciso
-(post-proceso), y por qué el curso usa los dos a la vez?
+**C3.** Si tuvieras que explicarle a alguien GNSS en una sola frase
+usando el arco, ¿cuál sería?
 
 ## 8. Pregunta de entrevista
 
-> "Tenés 90 segundos: explicale a un gerente cómo funciona el GPS,
-> sin fórmulas."
+> "Explicame en 90 segundos cómo un receptor pasa de una antena que
+> escucha ruido a una posición en un mapa."
 
-**Mini-caso**: un banco te pide 'GPS para timestamping de transacciones'
-(no les importa la posición). ¿Qué partes del arco les importan y cuáles
-no? ¿Qué riesgo nuevo aparece? (Adelanto de 6.x: spoofing de tiempo.)
+Guía: los tres segmentos → la señal llega → adquisición/tracking la
+enganchan → salen observables → se corrigen los errores → con la órbita
+del satélite se arma la geometría → Gauss-Newton resuelve PVT.
 
 ## 9. Mini-simulacro (8 min, aprobás con 4/5)
 
-1. Nombrá las 5 etapas del arco y una clase del path por etapa.
-2. ¿Qué segmento falló en Galileo 2019 y GLONASS 2014?
-3. ¿Por qué −158 dBW no impide navegar?
-4. ¿Cuáles son las 4 incógnitas y qué las despeja?
-5. L1 y L5: frecuencias y para qué sirve tener las dos.
+1. Nombrá los 3 segmentos y una responsabilidad de cada uno.
+2. Ordená el arco señal→…→PVT completo.
+3. ¿Qué observable es milimétrico pero ambiguo?
+4. ¿Por qué ≥4 satélites y no 3?
+5. ¿Qué significa la T de PVT y por qué le importa a la banca?
 
-## 10. Caso real — mayo 2000: apagar la degradación encendió una industria
+## 10. Caso real — por qué la T de PVT importa: el timing de las redes
 
-Hasta el 1 de mayo de 2000, GPS degradaba a propósito la señal civil
-(**Selective Availability**): ~100 m de error inducido por dithering del
-reloj. Esa medianoche EE.UU. la apagó y la precisión civil saltó a ~10 m
-**de un día para otro** — sin cambiar un solo receptor. Consecuencias:
-
-- Explotó el mercado civil (navegadores, agricultura, telefonía) — la
-  decisión fue política, no técnica: el arco ya lo permitía.
-- Quedó la lección de que el operador puede alterar el servicio
-  unilateralmente → argumento de Galileo (control civil europeo) y de
-  la autenticación (mod6).
-- La precisión ~10 m post-SA es exactamente la que tu PVT de 1.5 supera
-  con correcciones (1.95 m): el path recorre la historia.
+Buena parte de la infraestructura moderna (redes de telefonía, mercados
+financieros con *timestamps* legales, sincronización de la red
+eléctrica) **no usa GNSS para posición sino para tiempo**: el receptor
+está quieto y lo único que le importa es el $c\,\delta t$ que resuelve el
+PVT. Por eso una degradación de GNSS —jamming, spoofing, una anomalía de
+segmento como el apagón de Galileo de 2019 (clase 0.4)— es un problema de
+*timing* a escala nacional, no solo de "mapas". Es la razón por la que la
+resiliencia PNT (mod5, mod7) es política de Estado y no un detalle
+técnico.
 
 ## 11. Glosario ES/EN
 
 | ES | EN | Nota |
 |---|---|---|
-| PNT | positioning, navigation & timing | el producto real de GNSS |
-| segmento espacial / control / usuario | space / control / user segment | la tríada de arquitectura |
-| pseudodistancia | pseudorange | distancia + sesgos de reloj (1.2) |
-| efeméride | ephemeris | órbita+reloj emitidos; caduca |
-| disponibilidad selectiva | Selective Availability (SA) | degradación intencional, off desde 2000 |
-| presupuesto de enlace | link budget | de 27 W a 10⁻¹⁶ W |
-| piso de ruido | noise floor | la señal vive 20 dB abajo |
-| servicio abierto / regulado | OS / PRS (SPS / PPS) | civil vs restringido |
+| segmento espacial | space segment | los satélites |
+| segmento de control | control/ground segment | estaciones que calculan órbitas/relojes |
+| segmento usuario | user segment | el receptor |
+| pseudodistancia | pseudorange | rango + sesgos de reloj |
+| observable | observable / measurement | lo que el receptor mide |
+| efeméride | ephemeris | parámetros de órbita+reloj que emite el satélite |
+| PVT | PVT (Position, Velocity, Time) | la solución completa |
+| PNT | PNT (Positioning, Navigation, Timing) | el servicio a nivel sistema |
+| sesgo de reloj | clock bias | la 4ª incógnita del receptor |
 
 ## 12. Cheat sheet
 
 ```text
-El arco:        señal → observables → mensaje/órbitas → correcciones → PVT
-                                    (verdad precisa SP3/CLK califica todo)
-Incógnitas:     x, y, z, c·δt  →  ≥4 satélites
-Potencia:       ~27 W emitidos → ~1e-16 W recibidos (−158 dBW, 20 dB bajo el ruido)
-Frecuencias:    L1/E1 1575.42 · L5/E5a 1176.45 · L2 1227.60 · E6 1278.75 MHz
-Regla de oro:   c ≈ 0.3 m/ns  (1 ns de reloj = 30 cm de rango)
-Segmentos:      espacial (emite) · control (ajusta y sube) · usuario (vos)
-Historia:       SA off 2000 (~100→10 m) · GLONASS 2014 · Galileo 2019
+Tres segmentos     espacial (satélites+relojes) · control (calcula/sube efeméride) · usuario (receptor)
+El arco            señal → observable → error → órbita → PVT
+                   mod2      1.5/3.4/2.2   mod3      1.3/4.1   1.5(+mod7)
+4 observables      código (m) · fase (mm, ambigua) · Doppler (velocidad) · C/N0 (potencia/anti-spoof)
+PVT                4 incógnitas: x,y,z,c·δt → ≥4 satélites → da también TIEMPO
 ```
 
 ## 13. Errores comunes
 
-1. Creer que el receptor **transmite** algo (es pasivo: solo escucha).
-2. Confundir precisión del sistema con precisión de TU solución (el
-   arco de correcciones es lo que las separa).
-3. Olvidar el reloj: "3 satélites para 3D" — son 4 incógnitas.
-4. Pensar el GNSS como espacial: el talón de Aquiles operativo es
-   terrestre (control) y local (tu entorno de multipath).
-5. Tratar el mensaje como estático: caduca en horas y alguien lo
-   renueva — o no (2019).
+1. Creer que el receptor "mide distancia": mide **tiempo/fase**, la
+   distancia es derivada (y sesgada → pseudo).
+2. Pensar que 3 satélites alcanzan (olvidar la 4ª incógnita: el reloj).
+3. Confundir el segmento de control (tierra, calcula) con el espacial
+   (satélites, emiten).
+4. Olvidar la **T**: para media infraestructura crítica el GNSS es un
+   reloj, no un mapa.
 
 ## 14. Referencias
 
-- ESA, *GNSS Data Processing Vol. I* — cap. 1 (arquitectura y segmentos: la lectura madre de esta clase).
-- Navipedia: *GNSS Architecture*, *GPS Services*, *Galileo Services*.
-- Kaplan & Hegarty — cap. 1–2 (visión general y link budget).
-- La historia de SA: declaración presidencial del 2000-05-01 (archivo público).
+- ESA, *GNSS Data Processing Vol. I* — cap. 1 (arquitectura y segmentos).
+- Navipedia — "GNSS Architecture", "GNSS Segments".
+- El resto del arco: este mismo repo, módulos 1–4.
 
-## 15. Flashcards y bitácora
+### Para ver (en español)
 
-- `flashcards_anki.csv` — deck sugerido `GNSS::M0::VG`.
-- `bitacora.md` — tu inventario del arco vs la tabla de validación.
+- [Señal GPS: portadora, código y mensaje — N. Garrido-Villén (UPV)](https://nagarvil.webs.upv.es/senal-gps/) — anatomía de la señal y el arco, videolección + apunte.
+- [¿Qué es y cómo funciona GNSS? — GPS Total](https://gpstotal.org/es/gps/gnss) — panorama de segmentos y constelaciones, texto de referencia rápida.
 
-## 16. Rúbrica de cierre
+## 15. Autoevaluación
 
-La clase se marca `[x]` en el README del repo **solo** si:
+- ⭐ Nombro los 3 segmentos y el arco completo de memoria.
+- ⭐⭐ Ubico cualquier clase del path en su eslabón del arco y justifico por qué.
+- ⭐⭐⭐ Explico el sistema entero en 90 s a alguien no técnico, con el ejemplo del timing.
 
-- [ ] El lab termina en `ARCO COMPLETO` con las 5 etapas pobladas.
-- [ ] E1 dibujado de memoria y cotejado.
-- [ ] Mini-simulacro ≥ 4/5.
-- [ ] La entrevista de 90 s sale sin fórmulas y sin trabarte.
-- [ ] Podés contar SA-2000, GLONASS-2014 y Galileo-2019 como historias de segmentos.
+## 16. Para tu bitácora
+
+Copiá [`bitacora.md`](bitacora.md): tu versión del arco en una frase, y
+qué eslabón te resulta hoy más borroso (para volver acá al terminar cada
+módulo).
