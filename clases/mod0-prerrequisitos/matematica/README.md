@@ -53,6 +53,64 @@ de izquierda a derecha.
 - Los ejercicios traen la solución plegada (`▸ Solución`): resolvé antes
   de desplegar.
 
+## Lab-lite: verificador de la rampa
+
+Cuando termines las notas, corré desde la raíz del repo:
+
+```bash
+python3 clases/mod0-prerrequisitos/matematica/lab/verificar_rampa.py
+```
+
+Chequea con asserts los números de referencia de toda la cadena (ritmos,
+jacobiano numérico vs analítico, las ecuaciones normales de la tabla de
+9 puntos, Gauss-Newton para $p^2=9$ y el error $h^2$ de la
+linealización). Si termina en "RAMPA OK", estás en condiciones de entrar
+al lab de la 0.2.
+
+## Cheat sheet de la cadena
+
+```text
+Definición de derivada     f'(b) = lim_{h→0} [f(b+h) − f(b)] / h   (un 0/0 resuelto)
+Las 4 piezas               c→0 · x→1 · c·x→c · x²→2x
+Las 2 reglas               multiplicador acompaña · suma = término a término
+Parcial (congelar)         sumando congelado muere · multiplicador congelado queda
+Cadena (cáscara/peaje)     d/db (relleno)² = 2·(relleno)·(relleno)'
+Ecuaciones normales        Σy = mΣx + nb        Σxy = mΣx² + bΣx
+La tabla de referencia     Σx=55 Σy=57 Σxy=233 Σx²=473 n=9 → m≈−0,8425 b≈11,48
+Linealización              f(p₀+δ) ≈ f(p₀) + J·δ     error ~ h²
+Gauss-Newton               (JᵀJ)δ = Jᵀr · actualizar p←p+δ · cortar por ‖δ‖ chico
+Fila del PVT (G)           (−ux, −uy, −uz, 1)  ← versor receptor→sat + reloj
+Convergencia GN            cuadrática cerca de la solución (dígitos ~se duplican)
+```
+
+## Glosario (informal → formal)
+
+| Informal (de sesión) | Formal (UTN) |
+|---|---|
+| enchufar | **sustitución directa / evaluar** |
+| sin huecos | **función continua** |
+| el hueco | **discontinuidad evitable** |
+| el ratito / pasito | **incremento** ($h$) |
+| ritmo promedio | **cociente incremental** |
+| ritmo instantáneo | **tasa de variación instantánea** (la derivada) |
+| la entrada | **variable independiente / argumento** |
+| la salida | **imagen** |
+| congelar | **derivación parcial** (las demás variables como constantes) |
+| cáscara y relleno / peaje | **regla de la cadena** (función compuesta) |
+| la cajita | **binomio / propiedad distributiva** |
+| los montones | **términos de las ecuaciones normales** (productos escalares) |
+| el tirón | $J^\top \mathbf{r}$ |
+| el paso / pasito de GN | **vector corrección** $\boldsymbol\delta$ |
+
+**Tarjeta de símbolos** (recordatorio rápido): $\mathbf{p}_0$ (candidata
+inicial) · $\mathbf{s}_i$ (posición del satélite $i$) · $\rho_i$
+(pseudodistancia medida, el dato) · $d_i$ (distancia predicha) · $r_i$
+(residuo = medido − predicho) · $S$ (función objetivo: suma de
+residuos²) · $J$ (matriz jacobiana; filas = observaciones) · $J^\top$
+(traspuesta: filas↔columnas) · $M = J^\top J$ · $\mathbf{v} =
+J^\top\mathbf{r}$ · $\boldsymbol\delta$ (corrección) · $G$ (matriz de
+geometría: el $J$ del PVT).
+
 ## Dónde desemboca
 
 El checkpoint del Módulo 0 pide *explicar por qué linealizar el problema
