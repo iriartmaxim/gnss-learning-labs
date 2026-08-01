@@ -1,27 +1,29 @@
 # Bitácora — Constelaciones
 
-**Fecha**: ____ · **Tiempo**: ____
+> Completá esto al terminar. Es tu evidencia de trabajo y tu material de repaso.
 
-## Censo vs referencia (día 166)
+**Fecha**: ____ · **Tiempo invertido**: ____ h
 
-| Sistema | Mi conteo | Referencia |
+## Mis resultados vs referencia (día 166)
+
+| Métrica | Mi resultado | Referencia |
 |---|---|---|
-| GPS | | 32 |
-| GLONASS | | 27 |
-| Galileo | | 30 |
-| BeiDou | | 37 |
-| Globales | | 126 |
-
-- [ ] `lab_constelaciones_TODO.py` termina en "CENSO OK".
-
-## Por qué Galileo primaria (en mis palabras)
-
->
+| Censo G/E/R/C/J/I/S | | 32/30/27/37/5/3/17 |
+| a: GPS / Galileo / GLONASS / BDS | | 26 561 / 29 600 / 25 502 / 27 906 km |
+| T: GPS / Galileo / GLONASS / BDS | | 11.97 / 14.08 / 11.26 / 12.89 h |
 
 ## Mini-simulacro
 
-Puntaje: ___ / 5
+Puntaje: ___ / 5 (aprobado con 4)
 
-## Pendientes
+## Qué me costó
+
+-
+
+## Qué conecté con otras clases
+
+- (ej.: la mediana de BeiDou cae en los MEO — los GEO son los mismos 42 164 km de la escalera de la 0.3)
+
+## Pendientes / dudas para repasar
 
 -

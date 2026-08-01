@@ -1,51 +1,53 @@
 #!/usr/bin/env python3
-"""Figuras de la clase visión global. Regenerar: python3 make_figures.py"""
+"""Figuras de visión global (esquemáticas, sin dependencia de datos)."""
 import matplotlib
-from pathlib import Path
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+from matplotlib.patches import FancyArrow, FancyBboxPatch
 
-# fig1 (hero): el arco con el módulo del path debajo de cada eslabón
-arco = [("señal", "mod2"), ("observable", "1.5 · 3.4 · 2.2"),
-        ("error", "mod3"), ("órbita", "1.3 · 4.1"), ("PVT", "1.5 · mod7")]
-fig, ax = plt.subplots(figsize=(10, 2.8))
-x = 0.06
-for i, (titulo, mod) in enumerate(arco):
-    box = FancyBboxPatch((x, 0.45), 0.13, 0.32, boxstyle="round,pad=0.01",
-                         fc="#dce8f5", ec="#205080", lw=1.5)
-    ax.add_patch(box)
-    ax.text(x + 0.065, 0.61, titulo, ha="center", va="center", fontsize=11, weight="bold")
-    ax.text(x + 0.065, 0.34, mod, ha="center", va="center", fontsize=8, color="#555")
-    if i < len(arco) - 1:
-        ax.add_patch(FancyArrowPatch((x + 0.13, 0.61), (x + 0.19, 0.61),
-                                     arrowstyle="-|>", mutation_scale=16, color="#205080"))
-    x += 0.19
-ax.text(0.5, 0.9, "El arco del path: cada eslabón es un módulo del repo",
-        ha="center", fontsize=12, weight="bold")
-ax.text(0.5, 0.12, "señal → observable → error → órbita → PVT",
-        ha="center", fontsize=9, style="italic", color="#666")
-ax.set_xlim(0, 1.03); ax.set_ylim(0, 1); ax.axis("off")
-aca = Path(__file__).resolve().parent
-fig.savefig(aca / "fig1_arco.svg", bbox_inches="tight")
+aca = __file__.rsplit("/", 1)[0]
+
+# fig1: el arco con las clases del path
+etapas = [("SEÑAL", "2.1–2.4", "#4878cf"), ("OBSERVABLES", "1.2 · 1.5 · 3.4", "#6acc65"),
+          ("MENSAJE\nÓRBITAS", "0.4 · 1.3 · 4.1", "#ee854a"),
+          ("CORRECCIONES", "3.1–3.4", "#d65f5f"), ("SOLUCIÓN PVT", "1.1–1.5", "#956cb4")]
+fig, ax = plt.subplots(figsize=(10, 3.2))
+for i, (nombre, clases, color) in enumerate(etapas):
+    x = i * 2.0
+    ax.add_patch(FancyBboxPatch((x, 0.35), 1.55, 1.05, boxstyle="round,pad=0.08",
+                                fc=color, ec="none", alpha=0.85))
+    ax.text(x + 0.78, 1.12, nombre, ha="center", va="center", fontsize=9,
+            color="white", weight="bold")
+    ax.text(x + 0.78, 0.62, clases, ha="center", va="center", fontsize=8, color="white")
+    if i < 4:
+        ax.add_patch(FancyArrow(x + 1.68, 0.9, 0.22, 0, width=0.06,
+                                head_width=0.2, head_length=0.1, fc="#555555", ec="none"))
+ax.text(4.9, 2.05, "VERDAD PRECISA (SP3/CLK) — califica todas las etapas",
+        ha="center", fontsize=8.5, style="italic", color="#333333")
+ax.annotate("", xy=(4.9, 1.55), xytext=(4.9, 1.95),
+            arrowprops=dict(arrowstyle="->", color="#333333", ls="--"))
+ax.set_xlim(-0.3, 10.1); ax.set_ylim(0, 2.4); ax.axis("off")
+ax.set_title("El arco GNSS: cada clase del path trabaja un tramo", fontsize=11)
+fig.tight_layout()
+fig.savefig(f"{aca}/fig1_arco.svg")
 
 # fig2: los tres segmentos
-fig, ax = plt.subplots(figsize=(8, 3.2))
-seg = [("Segmento\nespacial", "satélites\nrelojes atómicos\ngeneran la señal", 0.17, "#f5e6cc"),
-       ("Segmento de\ncontrol", "estaciones en tierra\ncalculan órbita+reloj\nsuben la efeméride", 0.5, "#d8ecd8"),
-       ("Segmento\nusuario", "tu receptor\nadquiere→trackea→PVT", 0.83, "#dce8f5")]
-for titulo, det, cx, col in seg:
-    ax.add_patch(FancyBboxPatch((cx - 0.14, 0.3), 0.28, 0.5, boxstyle="round,pad=0.015",
-                                fc=col, ec="#444", lw=1.2))
-    ax.text(cx, 0.68, titulo, ha="center", va="center", fontsize=11, weight="bold")
-    ax.text(cx, 0.44, det, ha="center", va="center", fontsize=8)
-ax.add_patch(FancyArrowPatch((0.31, 0.7), (0.36, 0.7), arrowstyle="-|>", mutation_scale=14, color="#444"))
-ax.text(0.335, 0.75, "sube\nefeméride", ha="center", fontsize=6.5)
-ax.add_patch(FancyArrowPatch((0.31, 0.45), (0.36, 0.45), arrowstyle="-|>", mutation_scale=14, color="#444"))
-ax.add_patch(FancyArrowPatch((0.64, 0.55), (0.69, 0.55), arrowstyle="-|>", mutation_scale=14, color="#444"))
-ax.text(0.665, 0.6, "señal", ha="center", fontsize=6.5)
-ax.text(0.5, 0.92, "Los tres segmentos de un GNSS", ha="center", fontsize=12, weight="bold")
-ax.set_xlim(0, 1); ax.set_ylim(0.2, 1); ax.axis("off")
-fig.savefig(aca / "fig2_segmentos.svg", bbox_inches="tight")
-
+fig, ax = plt.subplots(figsize=(7.5, 3.6))
+segs = [("ESPACIAL", "emite señal + mensaje\n~30 sats por sistema", 0.83, "#4878cf"),
+        ("CONTROL", "mide, ajusta, sube efemérides\nel punto único de falla", 0.5, "#d65f5f"),
+        ("USUARIO", "escucha, correla, resuelve\n(pasivo: nunca transmite)", 0.17, "#6acc65")]
+for nombre, desc, y, color in segs:
+    ax.add_patch(FancyBboxPatch((0.06, y - 0.12), 0.36, 0.24, boxstyle="round,pad=0.02",
+                                transform=ax.transAxes, fc=color, alpha=0.85, ec="none"))
+    ax.text(0.24, y, nombre, transform=ax.transAxes, ha="center", va="center",
+            fontsize=10, color="white", weight="bold")
+    ax.text(0.72, y, desc, transform=ax.transAxes, ha="center", va="center", fontsize=9)
+ax.annotate("", xy=(0.24, 0.62), xytext=(0.24, 0.72), xycoords="axes fraction",
+            arrowprops=dict(arrowstyle="<->", color="#555555"))
+ax.annotate("", xy=(0.24, 0.29), xytext=(0.24, 0.39), xycoords="axes fraction",
+            arrowprops=dict(arrowstyle="->", color="#555555"))
+ax.axis("off")
+ax.set_title("Los tres segmentos: el de arriba emite, el de abajo escucha,\ny el del medio es el que se rompe", fontsize=10)
+fig.tight_layout()
+fig.savefig(f"{aca}/fig2_segmentos.svg")
 print("figuras escritas: ['fig1_arco.svg', 'fig2_segmentos.svg']")

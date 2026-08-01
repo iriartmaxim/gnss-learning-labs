@@ -1,208 +1,219 @@
-# Constelaciones globales, regionales y aumentación
+# Constelaciones — globales, regionales y aumentación
 
 > Bloque del máster: B1 — Basics · Constelaciones globales / regionales / aumentación
 
-**Objetivo en una frase**: conocer los cuatro GNSS globales
-(GPS/GLONASS/Galileo/BeiDou), los regionales (QZSS/NavIC) y la
-aumentación (SBAS/EGNOS), y por qué **este path usa Galileo como
-constelación primaria y GPS como contraste**.
+Una sola idea organiza la clase: **hay cuatro respuestas distintas a la
+misma pregunta de ingeniería** (¿cómo cubro el planeta con relojes
+voladores?) — y las diferencias de diseño (altura, período, señal,
+formato de efeméride) se **miden** en el BRDC que ya tenés en el disco.
 
-**Tiempo estimado**: 1–1.5 h (teoría 30' · lab 25' · ejercicios y cierre 30').
+**Tiempo estimado**: 1.5–2 h (teoría 40' · lab 30–40' · ejercicios y simulacro 30').
 
 ## 1. Objetivos
 
-- [ ] Nombrar los 4 sistemas globales, su país/bloque y su banda abierta.
-- [ ] Distinguir global vs regional vs aumentación.
-- [ ] Contar los SVs reales de cada sistema en tu propio BRDC.
-- [ ] Justificar por qué el path prioriza Galileo (E1/E5a, OSNMA) y usa GPS de contraste.
+- [ ] Distinguir las 4 globales (GPS, GLONASS, Galileo, BeiDou), las regionales (QZSS, NavIC) y la aumentación (SBAS/GBAS/A-GNSS)
+- [ ] Medir del BRDC real: cuántos satélites emite cada una y a qué altura/período vuela
+- [ ] Explicar por qué GLONASS transmite vectores de estado y el resto keplerianos
+- [ ] Reconocer la mezcla MEO/IGSO/GEO de BeiDou en los datos
 
 ## 2. Dónde estás en el mapa
 
 ```mermaid
-flowchart TB
-    subgraph GLOB[Globales]
-      GPS[GPS · EE.UU.] · GLO[GLONASS · Rusia] · GAL[Galileo · UE] · BDS[BeiDou · China]
-    end
-    subgraph REG[Regionales]
-      QZSS[QZSS · Japón] · NAVIC[NavIC · India]
-    end
-    subgraph AUG[Aumentación]
-      SBAS[SBAS/EGNOS/WAAS]
-    end
-    GLOB --> RX[tu receptor multi-GNSS]
-    REG --> RX
-    AUG --> RX
+flowchart LR
+    C04[0.4 pipeline] --> ESTA[constelaciones]
+    C03[0.3 mecánica orbital] --> ESTA
+    ESTA --> C13[1.3 efemérides]
+    ESTA --> C22[2.2 adquisición]
+    ESTA --> VG[visión global]
 ```
 
-Es una clase de panorama: el detalle de cada sistema aparece en su lugar
-(Galileo en mod2/mod6, GPS en 3.1, SBAS en 5.3). Acá se fija el mapa.
+Usa el censo de la 0.4 y la 3ª ley de la 0.3; alimenta la lectura de
+efemérides (1.3) y la elección de señales (mod2).
 
 ## 3. Teoría
 
-### 1. Los cuatro globales
+### 3.1 Las cuatro globales — mismo problema, cuatro diseños
 
-| Sistema | País/bloque | Satélites (nominal) | Órbita | Banda abierta | Rasgo del path |
-|---|---|---|---|---|---|
-| **GPS** | EE.UU. | ~31 | MEO ~20 200 km | L1 C/A | contraste (Klobuchar 3.1, C/A 2.1) |
-| **GLONASS** | Rusia | ~24 | MEO ~19 100 km | L1OF (FDMA) | el "raro": FDMA, no CDMA |
-| **Galileo** | UE | ~28 | MEO ~23 200 km | E1 (+OSNMA) | **primaria** (mod2, 1.3, mod6) |
-| **BeiDou** | China | ~35 | MEO+IGSO+GEO | B1I/B1C | el más grande y heterogéneo |
+| | GPS (EE.UU.) | GLONASS (Rusia) | Galileo (UE) | BeiDou (China) |
+|---|---|---|---|---|
+| Altura / período | ~20 190 km · 11 h 58 m | ~19 130 km · 11 h 16 m | ~23 230 km · 14 h 05 m | MEO ~21 530 km · 12 h 53 m **+ IGSO + GEO** |
+| Planos × sats | 6 × ~5 | 3 × 8 | 3 × 10 | 3 × 8 (MEO) + regionales |
+| Multiplexado | CDMA | **FDMA** (L1: canal por sat) + CDMA moderno | CDMA | CDMA |
+| Efeméride | keplerianos + correcciones | **vectores de estado** (integrás) | keplerianos + correcciones | keplerianos + correcciones |
+| Tiempo | GPST (sin leap seconds) | UTC(SU) (**con** leap seconds) | GST | BDT |
+| Señal civil clave | L1 C/A, L5 | L1OF | **E1 CBOC, E5a/b** | B1C, B2a |
 
-Todas son **MEO** (órbita media, ~20 000 km) salvo la parte IGSO/GEO de
-BeiDou. Distinta altura → distinto período y ground track (clase 0.3).
+Los números de la columna de órbitas son los que **vas a medir** en el
+lab — no los memorices: derivalos.
 
-### 2. Regionales y aumentación
+### 3.2 Por qué los períodos son deliberadamente distintos
 
-- **Regionales**: **QZSS** (Japón, órbitas IGSO que "cuelgan" sobre Asia-Pacífico) y **NavIC** (India, GEO+IGSO). No dan cobertura global: refuerzan una zona.
-- **Aumentación (SBAS)**: no son un GNSS propio; son satélites GEO (EGNOS en Europa, WAAS en EE.UU., etc.) que **corrigen y monitorean** a los GNSS y transmiten integridad. Es la base conceptual de la clase 5.3 y de la aviación.
+Ninguna elige el día sidéreo exacto por accidente: GPS repite su ground
+track cada día sidéreo (2 revoluciones), Galileo eligió 17 rev / 10 días
+justamente para **no** resonar (clase 0.3, caso real), GLONASS repite
+cada 8 días sidéreos (17 rev). La resonancia controla cuánto se acumulan
+las perturbaciones y cómo se repite el multipath (clase 3.4).
 
-### 3. CDMA vs FDMA
+### 3.3 GLONASS: el formato delata la filosofía
 
-Casi todos usan **CDMA** (todos en la misma frecuencia, se separan por
-código — la clase 2.1). GLONASS legado usa **FDMA** (cada satélite en su
-propia frecuencia): más difícil de procesar, por eso el path lo menciona
-pero no lo trabaja en profundidad.
+El nav GLONASS no trae `sqrtA`: trae **posición, velocidad y aceleración
+lunisolar** cada media hora — el receptor **integra** numéricamente en
+vez de evaluar keplerianos. Diseño soviético pragmático: efemérides
+cortas y frescas en vez de un ajuste largo. Consecuencia práctica: tu
+propagador de la 1.3 no sirve para GLONASS sin reescribirlo.
 
-### 4. Por qué Galileo primaria
+### 3.4 BeiDou: tres órbitas en una constelación
 
-El path elige Galileo como hilo conductor porque: transmite en **E1/E5a**
-abiertas y bien documentadas (OS SIS ICD), tiene **F/NAV** limpio para
-efemérides (1.3), y es el único con **autenticación OSNMA** (mod6) — el
-diferencial de perfil. GPS entra como **contraste** donde conviene:
-Klobuchar (3.1) y el código C/A clásico (2.1).
+BeiDou mezcla MEO (globales), **IGSO** (inclinadas geosíncronas, ∞ sobre
+Asia) y **GEO** (colgadas sobre el ecuador). Por eso el BRDC del día 166
+trae **37** BeiDou pero el SP3 MGEX solo **30** (los MEO+IGSO que CODE
+ajusta bien). La herencia del diseño regional-primero se ve en los datos.
 
-## 4. Lab: censo comparado sobre tu BRDC
+### 3.5 Regionales y aumentación
+
+- **QZSS** (Japón): órbitas HEO/GEO sobre Japón; complementa GPS en
+  cañones urbanos. **NavIC** (India): GEO/IGSO regionales.
+- **SBAS** (WAAS/EGNOS/MSAS/GAGAN): satélites GEO que retransmiten
+  **correcciones e integridad** calculadas por redes terrestres — no son
+  una constelación de navegación autónoma; son la capa de confianza
+  (B2/5.3). En el BRDC del 166 hay **17** SBAS emitiendo.
+- **GBAS**: la versión local (aeropuertos). **A-GNSS**: la red celular
+  te pasa efemérides/tiempo para saltear el cold start (caso real 2.2).
+
+## 4. Lab
 
 ```bash
-python3 clases/mod0-prerrequisitos/constelaciones/lab/lab_constelaciones_TODO.py
+python3 clases/mod0-prerrequisitos/constelaciones/lab/lab_constelaciones_TODO.py   # tu turno
+python3 clases/mod0-prerrequisitos/constelaciones/lab/soluciones/lab_constelaciones_solucion.py
 ```
 
-Contás los SVs únicos de cada sistema en el RINEX nav mixto del día 166 y
-los contrastás con la capacidad nominal. La solución de referencia está
-en `lab/soluciones/`.
+4 TODOs sobre el BRDC del día 166 (sin librerías): censo de SV únicos
+por constelación, semieje por mediana de `sqrtA`, |r| de GLONASS desde
+sus vectores de estado, y la tabla comparada con T = 2π√(a³/μ).
 
-### Tabla de validación (día 166, BRDC real)
+### Tabla de validación (tus números deben coincidir)
 
-| Sistema | SVs únicos en el BRDC |
+| Métrica | Valor de referencia |
 |---|---|
-| GPS | **32** |
-| GLONASS | **27** |
-| Galileo | **30** |
-| BeiDou | **37** |
-| **Globales (G+R+E+C)** | **126** |
-
-(El BRDC cuenta todo satélite que **emitió** ese día —incluidos los
-marginales—, por eso los números superan la constelación "nominal" y
-difieren del SP3 preciso, que solo lista los de órbita calculada.
-Discrepancia esperada, no error: la comentás en el lab.)
+| SV únicos: G / E / R / C / J / I / S | **32 / 30 / 27 / 37 / 5 / 3 / 17** |
+| a mediana: GPS / Galileo / GLONASS / BeiDou | **26 561 / 29 600 / 25 502 / 27 906 km** |
+| T: GPS / Galileo / GLONASS / BeiDou | **11.97 / 14.08 / 11.26 / 12.89 h** |
+| Altura GPS / Galileo | 20 190 / 23 229 km |
 
 ## 5. Ejercicios a mano
 
-**E1.** De los cuatro globales, ¿cuál orbita más alto y cuál más bajo
-(tabla §3.1)? Con la 3ª ley de Kepler (clase 0.3), ¿cuál tiene el período
-más largo?
+**E1.** Con la 3ª ley (0.3): verificá que a=29 600 km da T≈14.08 h.
+Después al revés: ¿qué a necesitarías para T = 12 h exactas?
 
-**E2.** Un receptor "GPS-only" ve 8 satélites; uno multi-GNSS ve 30.
-¿Qué gana el multi-GNSS además de "más satélites" (pensá geometría/DOP,
-clase 1.4, e integridad, mod5)?
+**E2.** GPS emite ~14 efemérides/sat/día y Galileo ~370 (clase 0.4).
+Con los censos de hoy (32 y 30 SV), ¿cuántos registros esperás de cada
+una en el BRDC? Compará con 450 y 11 119.
 
-**E3.** ¿Por qué SBAS **no** cuenta como un quinto GNSS global aunque
-transmita desde el espacio?
+**E3.** BeiDou GEO: ¿qué altura tiene una órbita de T = 23 h 56 m?
+(La respuesta la conocés de la 0.3: 35 786 km.) ¿Por qué esos satélites
+no le sirven a un usuario en Argentina?
 
 ## 6. Estimaciones Fermi
 
-**F1.** Con ~120 satélites globales operativos repartidos en el cielo,
-¿cuántos esperás sobre el horizonte en un instante desde un punto abierto?
-(Regla: aprox. la mitad de cada constelación está del lado visible.)
+**F1.** ¿Cuántos satélites de navegación activos hay en total? (Sumá el
+censo del lab: ~120–130 con regionales y SBAS.)
 
-**F2.** Galileo a 23 200 km vs GPS a 20 200 km: ¿cuánto más tarda la
-señal de Galileo en llegar? (Δaltura / c.)
+**F2.** Si cada GNSS global quiere ≥4 satélites visibles en todo el
+planeta, ¿por qué todas terminan en 24–30 satélites? (Pista: geometría
+de cobertura MEO, no capacidad de lanzamiento.)
 
 ## 7. Preguntas conceptuales
 
-Respuestas en `soluciones.md`.
+Respuestas en `soluciones.md` — primero por escrito.
 
-**C1.** ¿Por qué "más constelaciones" mejora la posición aun con el mismo
-receptor y el mismo ruido de medición?
+**C1.** ¿Por qué el SP3 MGEX trae 30 BeiDou y el BRDC 37? ¿Qué te dice
+eso sobre qué órbitas son "ajustables" con una red global?
 
-**C2.** ¿Qué hace distinto a GLONASS que complica un receptor CDMA común?
+**C2.** FDMA vs CDMA: ¿por qué GLONASS necesita un canal de frecuencia
+por satélite y qué complica eso en el receptor (mod2)?
 
-**C3.** ¿Por qué al path le conviene Galileo y no GPS como sistema
-primario, si GPS es el más conocido?
+**C3.** Un receptor multi-constelación, ¿suma robustez gratis? ¿Qué
+nueva incógnita aparece al mezclar GPS+Galileo? (Adelanto de 4.4: GGTO.)
 
 ## 8. Pregunta de entrevista
 
-> "Un cliente te pide un receptor 'multi-constelación'. ¿Qué sistemas
-> incluirías, qué ganás con cada uno y qué complejidad agrega cada uno?"
+> "Compará GPS y Galileo como diseños de ingeniería: órbita, señal,
+> tiempo y mensaje. ¿Qué mejoró Galileo llegando 25 años después?"
+
+**Mini-caso**: te piden el receptor de un tractor autónomo para
+Argentina. ¿Qué constelaciones priorizás y por qué? ¿Te sirve QZSS?
+¿Y SBAS, habiendo WAAS pero no un SBAS operacional local?
 
 ## 9. Mini-simulacro (8 min, aprobás con 4/5)
 
-1. Nombrá los 4 globales con su país.
-2. ¿Cuál usa FDMA y qué implica?
-3. Global vs regional vs aumentación: un ejemplo de cada uno.
-4. ¿Qué banda abierta de Galileo trae autenticación?
-5. ¿Por qué el BRDC lista más SVs que la constelación nominal?
+1. Ordená por altura: GPS, GLONASS, Galileo, BeiDou MEO.
+2. ¿Cuál transmite vectores de estado y qué implica para tu propagador?
+3. ¿Qué es un IGSO y quiénes los usan?
+4. ¿SBAS navega o corrige? ¿De dónde salen sus datos?
+5. ¿Por qué Galileo eligió 14 h 05 m y no 12 h?
 
-## 10. Caso real — BeiDou y el salto a global (2020)
+## 10. Caso real — abril 2014: GLONASS entera fuera de servicio
 
-BeiDou completó su constelación global (BDS-3) en 2020, pasando de un
-sistema regional a uno con **más satélites que cualquier otro GNSS** y una
-arquitectura mixta MEO+IGSO+GEO única. En tu censo del día 166 eso se ve
-directo: BeiDou aporta **37 SVs**, más que GPS (32) o Galileo (30). El
-dato ilustra tres cosas del path: (1) el mundo GNSS es multipolar, no
-"GPS y otros"; (2) la heterogeneidad orbital de BeiDou complica el
-procesamiento uniforme; (3) un receptor moderno **tiene** que ser
-multi-constelación para aprovechar la geometría disponible (mejor DOP,
-clase 1.4; más redundancia para integridad, mod5).
+El 1–2 de abril de 2014, un upload defectuoso del segmento de control
+ruso dejó **toda** la constelación GLONASS emitiendo efemérides
+erróneas durante ~11 horas: receptores en todo el mundo descartaron o
+degradaron la constelación completa. Lecciones: (a) el punto único de
+falla de un GNSS no está en órbita sino en tierra (como Galileo 2019,
+clase 1.3); (b) multi-constelación no es lujo — los receptores que
+mezclaban GPS+GLONASS siguieron; los GLONASS-only quedaron ciegos;
+(c) validar efemérides (plausibilidad física, 4.1) es defensa real.
 
 ## 11. Glosario ES/EN
 
 | ES | EN | Nota |
 |---|---|---|
-| constelación | constellation | conjunto de satélites de un sistema |
-| global / regional | global / regional | cobertura mundial vs zona |
-| aumentación | augmentation (SBAS) | corrige/monitorea GNSS desde GEO |
-| MEO / IGSO / GEO | MEO / IGSO / GEO | órbitas media / inclinada geosíncrona / geoestacionaria |
-| CDMA / FDMA | CDMA / FDMA | separación por código vs por frecuencia |
-| multi-GNSS | multi-GNSS | receptor que combina varios sistemas |
+| constelación global | global constellation / GNSS core | GPS, GLONASS, Galileo, BeiDou |
+| regional | RNSS | QZSS, NavIC |
+| aumentación | augmentation (SBAS/GBAS/A-GNSS) | corrige e integra, no navega sola |
+| órbita MEO / IGSO / GEO | MEO / IGSO / GEO | media / inclinada geosíncrona / geoestacionaria |
+| multiplexado por código / frecuencia | CDMA / FDMA | GLONASS legado = FDMA |
+| vectores de estado | state vectors | efeméride GLONASS: r, v, a |
+| repetición del ground track | ground track repeat | resonancia órbita-rotación |
+| sesgo inter-sistema | inter-system bias / GGTO | al mezclar constelaciones (4.4) |
 
 ## 12. Cheat sheet
 
 ```text
-Globales   GPS(EE.UU.,L1C/A) · GLONASS(Rusia,FDMA) · Galileo(UE,E1+OSNMA) · BeiDou(China,B1)
-Regionales QZSS(Japón,IGSO) · NavIC(India,GEO+IGSO)
-Aumentación SBAS: EGNOS(UE) · WAAS(EE.UU.) — GEO, corrigen e integridad → clase 5.3
-Órbitas    todas MEO ~19-23 mil km (salvo IGSO/GEO de BeiDou)
-Path       Galileo primaria (E1/E5a, F/NAV, OSNMA) · GPS contraste (Klobuchar, C/A)
-Censo 166  G32 · R27 · E30 · C37 · globales 126 (BRDC cuenta todo el que emitió)
+Alturas (km):    GLONASS 19 130 < GPS 20 190 < BDS MEO 21 535 < GAL 23 230 < GEO 35 786
+Períodos (h):    11.26 · 11.97 · 12.89 · 14.08   (medidos del BRDC, día 166)
+Censo día 166:   G32 E30 R27 C37 J5 I3 S17  (SP3 MGEX: solo 116)
+Formatos:        keplerianos+correcciones (G/E/C/J) · vectores de estado (R)
+Tiempos:         GPST y GST sin leap seconds · UTC(SU) con · BDT sin
+Regla BDS:       nav 37 = MEO+IGSO+GEO · SP3 30 = lo que la red global ajusta
 ```
 
 ## 13. Errores comunes
 
-1. Decir "GPS" para referirse a GNSS en general: GPS es **uno** de cuatro globales.
-2. Contar SBAS como un GNSS: es aumentación, no navegación autónoma.
-3. Esperar que el BRDC coincida con la constelación "nominal": lista todo el que emitió (incluye marginales).
-4. Asumir que todos son CDMA: GLONASS legado es FDMA.
-5. Creer que "más satélites" es solo cantidad: lo que importa es la **geometría** (DOP) y la **redundancia** (integridad).
+1. **"GPS" como sinónimo de GNSS** — GPS es una de cuatro.
+2. Propagar GLONASS con el motor kepleriano de la 1.3 (formato distinto).
+3. Contar BeiDou del nav y del SP3 y creer que "faltan" satélites.
+4. Asumir que SBAS posiciona por sí solo (corrige, no navega).
+5. Mezclar constelaciones sin la incógnita de sesgo inter-sistema.
+6. Memorizar alturas sin poder derivarlas de sqrtA y la 3ª ley.
 
 ## 14. Referencias
 
-- Navipedia — "GNSS constellations", "GPS/GLONASS/Galileo/BeiDou", "SBAS".
-- Galileo OS SIS ICD — bandas y estructura de Galileo (se usa en 1.3, 2.x).
-- El censo del BRDC: clase 0.4 (`inspeccionar_datos.py`) y este lab.
+- Navipedia: *GPS Space Segment*, *GLONASS Space Segment*, *Galileo Space Segment*, *BeiDou Space Segment* (arquitecturas y órbitas).
+- Galileo OS SIS ICD §"Constellation" — los números oficiales que mediste.
+- GLONASS ICD (CDMA y FDMA) — el formato de vectores de estado del TODO 3.
+- RINEX 3.05 §A — cómo viaja cada constelación en el nav mixto.
 
-### Para ver (en español)
+## 15. Flashcards y bitácora
 
-- [¿Qué es y cómo funciona GNSS? — GPS Total](https://gpstotal.org/es/gps/gnss) — panorama de las constelaciones globales, regionales y SBAS.
-- [Metodología GNSS — N. Garrido-Villén (UPV)](https://nagarvil.webs.upv.es/metodos-de-posicionamiento-gnss-gps/metodologia/) — sistemas, órbitas y observación.
+- `flashcards_anki.csv` — deck sugerido `GNSS::M0::CONST`.
+- `bitacora.md` — tus números vs la tabla de validación.
 
-## 15. Autoevaluación
+## 16. Rúbrica de cierre
 
-- ⭐ Nombro los 4 globales, los regionales y qué es SBAS.
-- ⭐⭐ Corro el censo sobre mi BRDC y explico por qué difiere del nominal y del SP3.
-- ⭐⭐⭐ Justifico una arquitectura multi-GNSS para un caso concreto (geometría + integridad + complejidad).
+La clase se marca `[x]` en el README del repo **solo** si:
 
-## 16. Para tu bitácora
-
-Copiá [`bitacora.md`](bitacora.md): tus números del censo vs la tabla, y
-una frase sobre por qué el path eligió Galileo.
+- [ ] Los 4 TODO del lab pasan sus auto-tests sin abrir la solución.
+- [ ] Tus números coinciden con la tabla de validación (§4).
+- [ ] E1–E3 en papel y cotejados con `soluciones.md`.
+- [ ] Mini-simulacro ≥ 4/5.
+- [ ] Podés explicar GLONASS (formato) y BeiDou (37 vs 30) sin mirar.

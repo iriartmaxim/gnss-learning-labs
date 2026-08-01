@@ -1,84 +1,98 @@
 # Soluciones — Constelaciones
 
-## Lab — censo comparado (día 166)
+## Lab (TODO 1–4)
 
-| Sistema | SVs BRDC | nominal |
-|---|---|---|
-| GPS | 32 | ~31 |
-| GLONASS | 27 | ~24 |
-| Galileo | 30 | ~28 |
-| BeiDou | 37 | ~35 |
-| Globales | **126** | — |
+**TODO 1**: mismo criterio de cabecera que la 0.4 (letra + 2 dígitos),
+pero acumulando SV en un set por letra. Referencia día 166:
+G 32 · E 30 · R 27 · C 37 · J 5 · I 3 · S 17.
 
-El BRDC lista todo satélite que **emitió** ese día, incluidos los
-marginales o en pruebas; por eso supera el nominal y difiere del SP3
-preciso (que solo trae los de órbita calculada: E30, C30…). No es error:
-es la diferencia entre "quién transmitió" y "quién tiene producto fino".
+**TODO 2**: `sqrtA` es el 4º campo de la línea 3 (19 chars desde la
+col. 4, exponente `D`→`E`). a = sqrtA² → medianas: GPS 26 561 km,
+Galileo 29 600, BeiDou 27 906 (la mediana cae en los MEO: los GEO/IGSO
+de ~42 164 km quedan arriba).
 
-## E1 — más alto / más bajo / período
+**TODO 3**: GLONASS trae x, y, z (km) como primer campo de las líneas
+1–3 del registro. |r| mediana ≈ 25 502 km — no hay sqrtA que leer: el
+formato mismo te dice que acá se integra, no se propaga Kepler.
 
-Más alto: **Galileo** (~23 200 km); más bajo: **GLONASS** (~19 100 km).
-Por la 3ª ley ($T \propto a^{3/2}$), más alto = período más largo →
-**Galileo** tiene el período más largo de los cuatro (~14 h vs ~11h58 de
-GPS). Es la cuenta de diseño que hiciste en la clase 0.3 (E1).
+**TODO 4**: T = 2π√(a³/μ) → 11.97 / 14.08 / 11.26 / 12.89 h. Alturas =
+a − 6371 km.
 
-## E2 — qué gana el multi-GNSS
+## E1 — tercera ley
 
-Además de cantidad: (1) **geometría** — más satélites bien repartidos
-bajan el DOP (clase 1.4), mejorando la precisión con el mismo ruido; (2)
-**redundancia** — más ecuaciones que incógnitas permiten detectar y
-excluir fallos (RAIM, mod5); (3) **disponibilidad** en cañones urbanos y
-bajo follaje, donde con una sola constelación no alcanzan 4 satélites.
+a = 29 600 km → T = 2π√(a³/μ) = 50 690 s ≈ 14.08 h ✓. Para T = 12 h:
+a = (μ(T/2π)²)^(1/3) ≈ 26 610 km — casi GPS (11.97 h es medio día
+**sidéreo**, no solar: por eso GPS no usa 12 h exactas).
 
-## E3 — por qué SBAS no es un 5º global
+## E2 — registros esperados
 
-SBAS no provee navegación autónoma: sus GEO transmiten **correcciones e
-integridad** sobre los GNSS existentes (dónde está cada satélite mejor
-estimado, y si es confiable). Sin un GNSS abajo, SBAS no te posiciona.
-Es una capa de servicio, no una constelación de navegación.
+GPS: 32 × 14 ≈ 450 ✓ exacto. Galileo: 30 × 370 ≈ 11 100 ≈ 11 119 ✓.
+El censo de la 0.4 y el de hoy cierran entre sí.
 
-## F1 — satélites visibles
+## E3 — BeiDou GEO
 
-Con ~120 globales y aprox. la mitad del lado visible del planeta, y de
-esos los que superan el horizonte y la máscara de elevación: del orden de
-**30–40 satélites** simultáneos desde cielo abierto multi-GNSS. (Un
-receptor GPS-only ve típicamente 8–12.)
+T = 23 h 56 m → a ≈ 42 164 km → altura ≈ 35 786 km. Un GEO sobre Asia
+(~80°–160° E) queda bajo o debajo del horizonte visto desde Argentina:
+cobertura regional por diseño.
 
-## F2 — retardo extra de Galileo
+## F1 — total activos
 
-$\Delta h = 23\,200 - 20\,200 = 3\,000$ km. $\Delta t = 3\,000 / c
-\approx 3\,000 / 299\,792 \approx 10$ ms de tiempo de vuelo adicional
-(en el cénit). Nada dramático para el PVT, pero sí cambia la geometría.
+32+30+27+37+5+3 ≈ 134 emisores de navegación (+17 SBAS retransmisores).
+Orden: ~130.
 
-## C1 — por qué mejora con más constelaciones
+## F2 — por qué 24–30
 
-Porque la precisión de posición es $\sigma_{pos} \approx \text{DOP}
-\times \sigma_{med}$: con el mismo $\sigma_{med}$, más satélites bien
-distribuidos **bajan el DOP** (mejor condicionamiento de la matriz de
-geometría, clase 1.4). Y la redundancia habilita el control de calidad
-(mod5). Mismo receptor, mismo ruido, mejor y más confiable posición.
+Con MEO de ~20 000 km, la Tierra se cubre con ≥4 visibles usando ~24
+satélites bien repartidos (6×4 GPS clásico); los extras son margen de
+mantenimiento y geometría (DOP), no capacidad de lanzamiento.
 
-## C2 — GLONASS FDMA
+## C1 — 37 vs 30
 
-GLONASS legado da a cada satélite su **propia frecuencia** (FDMA), no un
-código distinto en la misma frecuencia (CDMA). Un receptor CDMA común
-correla todos los satélites contra la misma portadora; con FDMA hay que
-sintonizar y procesar canales de frecuencia distintos, más sesgos
-inter-canal. Más hardware/procesamiento por poca ganancia → el path lo
-menciona y sigue con los CDMA.
+CODE ajusta con una red **global**: los MEO (y algo de IGSO) se observan
+desde todo el mundo; los GEO de BeiDou se ven siempre desde la misma
+región con geometría pobre (satélite quieto en el cielo) → órbitas
+difíciles de ajustar → afuera del SP3. El BRDC en cambio guarda todo lo
+que se emite.
 
-## C3 — Galileo primaria
+## C2 — FDMA
 
-Documentación abierta y prolija (OS SIS ICD), señales E1/E5a bien
-definidas, F/NAV limpio para efemérides (1.3), y —clave— es el único con
-**OSNMA** (autenticación, mod6), que es el diferencial del perfil de
-ciberseguridad. GPS entra donde suma como contraste histórico (Klobuchar,
-C/A). No es que GPS sea peor: es que Galileo enseña más cosas nuevas.
+Cada sat GLONASS legado emite el MISMO código en frecuencia distinta
+(L1 = 1602 + k·0.5625 MHz). El receptor necesita front-end más ancho y
+réplicas por canal de frecuencia (no solo por código) — más hardware,
+y sesgos inter-frecuencia propios. El CDMA moderno (L3OC) converge al
+esquema de los demás.
+
+## C3 — la incógnita extra
+
+Cada sistema tiene su escala de tiempo: mezclar GPS+Galileo agrega el
+sesgo GGTO (o se estima como incógnita extra → hace falta 1 satélite
+más). Robustez sí, pero no gratis: 4+1 incógnitas con dos sistemas.
 
 ## Mini-simulacro
 
-1. GPS (EE.UU.), GLONASS (Rusia), Galileo (UE), BeiDou (China). 2.
-GLONASS: FDMA, cada satélite su frecuencia → receptor más complejo. 3.
-global GPS · regional QZSS · aumentación EGNOS. 4. E1 (OSNMA). 5. porque
-cuenta todo el que emitió, incluidos marginales/pruebas, no solo la
-constelación nominal.
+1. GLONASS (19 130) < GPS (20 190) < BDS MEO (21 535) < Galileo (23 230).
+2. GLONASS: vectores de estado → el receptor integra numéricamente; el
+   propagador kepleriano de la 1.3 no aplica.
+3. Órbita geosíncrona inclinada (traza en ∞ sobre una región): BeiDou y
+   QZSS/NavIC.
+4. Corrige e informa integridad; sus datos salen de redes TERRESTRES de
+   monitoreo, subidos a GEOs que retransmiten.
+5. Para no resonar con la rotación terrestre: 17 rev/10 días reparte las
+   perturbaciones y el multipath no se repite cada día (3.4).
+
+## Entrevista — guión
+
+Órbita: Galileo más alto (23 230 vs 20 190) → menos perturbación
+relativa, repeat de 10 días. Señal: CBOC en E1 (mejor multipath que C/A)
+y E5 AltBOC ancha. Tiempo: GST sin leaps, GGTO emitido. Mensaje:
+I/NAV+F/NAV con re-emisión densa (0.4: 370/día vs 14) y OSNMA de
+autenticación (mod6). Cierre: "llegó después y diseñó contra los
+problemas medidos de GPS".
+
+## Mini-caso — tractor en Argentina
+
+GPS+Galileo (cobertura global y densidad de señal, iono-free E1/E5a) +
+GLONASS como tercera si el receptor lo trae. QZSS no aporta acá (órbitas
+sobre Asia-Pacífico... sus GEO/HEO no cubren Sudamérica). SBAS: WAAS no
+da servicio garantizado en Argentina — para precisión agrícola real:
+corrección local (RTK/red propia o PPP, B2).

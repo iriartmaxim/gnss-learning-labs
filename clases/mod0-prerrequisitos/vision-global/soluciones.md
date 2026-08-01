@@ -1,79 +1,88 @@
 # Soluciones — Visión global
 
-## Lab-lite — mapeo del arco
+## Lab (TODO 1–4)
 
-Con los datos de la clase 0.4 en disco, la clasificación correcta:
+Los patrones: IQ = `data/raw/iq/*.dat` · obs = `data/raw/*/*/[LC]*_MO.rnx`
+· nav = `data/raw/*/*/BRDC*_MN.rnx` · precisos = `*ORB.SP3` y `*CLK.CLK`
+· productos = `clases/*/*/data/resultados_*.json`. Referencia con 0.4 y
+labs corridos: 3 + 3 + 2 + 2 + ~12 archivos, ~150 MB, 5/5 etapas.
 
-| Archivo | Eslabón | Clase |
-|---|---|---|
-| `*.dat` (IQ) | señal | mod2 |
-| `*_MO.rnx` | observable | 1.5, mod3 |
-| `*_MN.rnx` | órbita (broadcast) | 1.3, 4.1 |
-| `*ORB.SP3` | órbita (precisa) | 1.3, 4.1, 4.2 |
-| `*CLK.CLK` | error/reloj | 1.5, 4.3 |
+## E1 — el arco con las clases
 
-Censo esperado con lo bajado: 3 señal, 3 observable, 2 broadcast, 1 SP3, 1 CLK.
+señal (2.1–2.4) → observables (1.2, 1.5, 3.4) → mensaje/órbitas (0.4,
+1.3, 4.1, constelaciones) → correcciones (3.1–3.4) → PVT (1.1, 1.2,
+1.4, 1.5) — y la verdad precisa (SP3/CLK) calificándolo todo desde
+afuera. mod5/6/7 operan SOBRE la solución (confianza, precisión,
+seguridad).
 
-## E1 — ordenar en el arco
+## E2 — presupuesto de enlace
 
-código C/A (**señal**, mod2) → Klobuchar (**error** iono, 3.1) → ecuación
-de Kepler (**órbita**, 1.3) → Gauss-Newton (**PVT**, 1.5) → DOP (calidad
-del PVT, 1.4). El orden causal: primero existe la señal, de ella salen
-observables, se les quitan errores, se ubica el satélite por su órbita, y
-recién ahí se resuelve el PVT; el DOP juzga qué tan bien quedó.
+14.3 dBW + 13 dB − 182 dB ≈ **−155 dBW** ≈ 3×10⁻¹⁶ W. Con antena
+receptora ~0 dB y ancho de banda de C/A, la señal queda ~20 dB bajo el
+piso térmico: solo la ganancia de procesamiento de la correlación
+(10·log₁₀(1023) ≈ 30 dB) la saca a flote — por eso el arco EMPIEZA en
+la correlación.
 
-## E2 — redundancia
+## E3 — segmentos
 
-6 satélites = 6 ecuaciones, 4 incógnitas ($x,y,z,c\,\delta t$) → **2
-grados de redundancia**. Sirven para *chequear* la solución: detectar un
-satélite fallado (RAIM, 5.1) y hasta excluirlo (5.2). Sin redundancia la
-solución es única pero **no verificable**.
+(a) control · (b) usuario · (c) espacial · (d) control · (e) **ambos**:
+lo emite el segmento espacial, lo captura y compila una red terrestre
+(BKG) — el archivo es un producto del suelo sobre datos del cielo (0.4).
 
-## E3 — qué segmento falla
+## F1 — receptores
 
-(a) tormenta solar en el trayecto → ninguno de los tres *falla*: es el
-**medio de propagación** (error ionosférico, mod3). (b) efeméride vieja →
-**segmento de control** (no renovó/subió a tiempo; caso Galileo 2019).
-(c) cold start lento → **segmento usuario** (tu receptor buscando en
-frío; lo mitiga A-GPS).
+~7×10⁹ smartphones + vehículos + IoT/infraestructura → orden **10¹⁰**.
+Más receptores que personas.
 
-## F1 — tiempo de vuelo
+## F2 — energía
 
-$20\,200\,\text{km} / c \approx 67\,\text{ms}$. Un error de reloj de
-1 µs → $c \times 10^{-6} \approx 300\,\text{m}$ de error de rango. Por eso
-el reloj es la 4ª incógnita: 1 µs arruina la posición.
+1 J / 10⁻¹⁶ W = 10¹⁶ s ≈ 3×10⁸ años. La información no viaja en
+potencia sino en estructura (el código): correlación, no carga.
 
-## F2 — uploads diarios
+## C1 — la dependencia del control
 
-30 satélites × (24 h / 2 h) = 30 × 12 = **360 subidas de efeméride al
-día** — trabajo continuo del segmento de control (en la práctica el ritmo
-real es aún mayor; ver el censo del BRDC en 0.4).
+Las efemérides caducan (horas) porque la órbita real se aparta del
+ajuste (4.1). Si el control no sube frescas: Galileo 2019 (6 días
+mudo) y GLONASS 2014 (11 h envenenada) — satélites sanos, sistema
+muerto. Por eso B4 mira el sistema desde tierra.
 
-## C1 — "pseudo"distancia
+## C2 — por qué 4
 
-Porque no es una distancia geométrica: es una **medición de tiempo**
-(× c) hecha con dos relojes imperfectos (satélite y receptor), más
-propagación y ruido. El sesgo del reloj del receptor la corre a todas por
-igual; por eso se estima como incógnita.
+El receptor no sabe su hora: su reloj barato mete un sesgo c·δt igual
+en TODAS las mediciones. Es la 4ª incógnita — se despeja con la 4ª
+medición (1.2). Con 3 satélites y reloj atómico propio: 3 alcanzarían.
 
-## C2 — control vs fetch_data.py
+## C3 — dos arcos
 
-Ambos son la **tubería de órbitas y relojes**: el segmento de control los
-*calcula y sube* a los satélites; `fetch_data.py` los *baja* (broadcast,
-SP3, CLK) para que tus labs trabajen con lo mismo que usó el sistema. La
-0.4 es tu segmento de control en miniatura.
-
-## C3 — GNSS en una frase
-
-"Satélites con relojes atómicos emiten una señal; tu receptor mide el
-tiempo de vuelo a cuatro de ellos y resuelve a la vez dónde está y qué
-hora es." (Cualquier variante que respete el arco y las 4 incógnitas es
-válida.)
+Broadcast: latencia cero, exactitud ~1 m de órbita, para navegar YA.
+Preciso: ~2 semanas, ~2.5 cm, para calificar, calibrar y post-procesar.
+El curso navega con el primero y se califica con el segundo — medir el
+error propio contra una vara mejor es el método científico del path.
 
 ## Mini-simulacro
 
-1. Espacial (emite señal), control (calcula/sube efeméride), usuario
-   (resuelve PVT). 2. señal→observable→error→órbita→PVT. 3. la fase de
-   portadora. 4. porque el sesgo de reloj del receptor es una 4ª
-   incógnita. 5. Time: el receptor da tiempo sincronizado; la banca lo
-   usa para *timestamps* legales y la red eléctrica para sincronizar fase.
+1. señal (2.2) · observables (1.5) · mensaje (1.3) · correcciones (3.x)
+   · solución (1.5); vale cualquier clase correcta por etapa.
+2. Control/terreno en ambos.
+3. Porque la correlación aporta ~30 dB de ganancia de procesamiento: la
+   señal está diseñada para ser encontrada, no oída.
+4. x, y, z, c·δt — las despejan ≥4 pseudodistancias vía Gauss-Newton.
+5. 1575.42 y 1176.45 MHz; dos frecuencias ⇒ medir y eliminar la iono.
+
+## Entrevista — guión sin fórmulas
+
+"Hay ~30 relojes perfectos dando vueltas a la Tierra, cada uno grita la
+hora sin parar. Tu teléfono escucha cuatro gritos, nota que llegan con
+retrasos distintos, y de esos retrasos deduce a qué distancia está de
+cada reloj — y de ahí, dónde está parado. Todo lo demás — mapas,
+correcciones, precisión de centímetros — es ingeniería para que esos
+retrasos se midan cada vez mejor."
+
+## Mini-caso — timestamping bancario
+
+Les importa: mensaje (tiempo GNSS), reloj del receptor, integridad.
+No les importa: DOP fino, multipath métrico, precisión horizontal.
+Riesgo nuevo: **spoofing de tiempo** (correr el reloj sin mover la
+"posición") — la defensa es autenticación (OSNMA, 6.x) + holdover con
+reloj local. Un solo satélite basta para tiempo si la posición es
+conocida: el arco se recorta distinto según el producto.
