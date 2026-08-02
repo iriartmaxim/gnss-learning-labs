@@ -1,0 +1,13 @@
+{
+ "cobertura_por_capa": {
+  "RAIM": 3,
+  "consistencia": 3,
+  "OSNMA": 1,
+  "fisica": 2,
+  "tierra": 3
+ },
+ "combinada": 5,
+ "solo_usuario": 5,
+ "n": 5,
+ "sin_cobertura": []
+}
