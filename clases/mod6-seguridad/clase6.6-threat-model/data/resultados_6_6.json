@@ -1,0 +1,46 @@
+{
+ "amenazas": {
+  "falsificar efeméride/reloj (datos)": {
+   "OSNMA": true,
+   "SAS/ACAS": false,
+   "detectores_6.4": true,
+   "fisica_4.1": true,
+   "residuo": "bajo: OSNMA autentica los datos; física valida coherencia orbital"
+  },
+  "spoofing de rango (señal falsa alineada)": {
+   "OSNMA": false,
+   "SAS/ACAS": true,
+   "detectores_6.4": true,
+   "fisica_4.1": false,
+   "residuo": "medio: OSNMA NO ve el rango; SAS y detectores (C/N0, salto) ayudan"
+  },
+  "replay / meaconing (dentro de la ventana)": {
+   "OSNMA": false,
+   "SAS/ACAS": true,
+   "detectores_6.4": true,
+   "fisica_4.1": false,
+   "residuo": "medio: re-emitir señal auténtica con retardo evade OSNMA; SAS/tiempo lo acotan"
+  },
+  "jamming (negación)": {
+   "OSNMA": false,
+   "SAS/ACAS": false,
+   "detectores_6.4": true,
+   "fisica_4.1": false,
+   "residuo": "alto: no se puede autenticar lo que no llega; se detecta (AGC) y se puentea (INS)"
+  },
+  "captura de lazo (lift-off gradual)": {
+   "OSNMA": false,
+   "SAS/ACAS": true,
+   "detectores_6.4": true,
+   "fisica_4.1": true,
+   "residuo": "medio: la sanidad física (salto de posición/efeméride) y SAS lo delatan"
+  }
+ },
+ "cobertura": {
+  "OSNMA": 1,
+  "SAS/ACAS": 3,
+  "detectores_6.4": 5,
+  "fisica_4.1": 2
+ },
+ "problemas": []
+}
